@@ -60,7 +60,6 @@ class LikePostView(APIView):
             post=post,
             user=request.user
         )
-        
         if created:
             return Response({
                 'status': 'liked',
