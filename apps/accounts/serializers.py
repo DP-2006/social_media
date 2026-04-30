@@ -11,21 +11,16 @@ from .models import User, OTP
 def normalize_phone(phone):
     if not phone:
         return None
-    # تبدیل به رشته
     phone = str(phone)
-    # حذف همه چیز بجز اعداد
     cleaned = re.sub(r'\D', '', phone)
-    # حذف صفر اول اگر دارد
     if cleaned.startswith('0'):
         cleaned = cleaned[1:]
-    # اگر با 98 شروع نشده و 10 رقمی است، 98 اضافه کن
     if not cleaned.startswith('98') and len(cleaned) == 10:
         cleaned = '98' + cleaned
     return cleaned
 
 
 class RegisterSerializer(serializers.Serializer):
-    """ارسال کد تایید برای ثبت نام"""
     
     phone = serializers.CharField(max_length=20, min_length=10)
     
@@ -33,28 +28,25 @@ class RegisterSerializer(serializers.Serializer):
         value = normalize_phone(value)
         
         if not value:
-            raise serializers.ValidationError("شماره تلفن معتبر نیست")
+            raise serializers.ValidationError("phone number isnt valid ")
         
         if not value.isdigit():
-            raise serializers.ValidationError("شماره تلفن فقط باید شامل عدد باشد")
+            raise serializers.ValidationError("phone number have the numbers carecter plese write the correct forms ")
         
         return value
     
     def create_otp(self, phone):
-        # غیرفعال کردن OTPهای قبلی
         OTP.objects.filter(phone=phone, is_used=False).update(is_used=True)
         
-        # تولید کد
         code = str(random.randint(100000, 999999))
         
-        # ایجاد OTP جدید
         otp = OTP.objects.create(
             phone=phone,
             code=code,
             expires_at=timezone.now() + timedelta(minutes=2)
         )
         
-        print(f"📱 OTP for {phone}: {code}")
+        print(f" OTP for {phone}: {code}")
         return otp
     
     def save(self):
@@ -62,7 +54,6 @@ class RegisterSerializer(serializers.Serializer):
 
 
 class VerifyOTPSerializer(serializers.Serializer):
-    """تایید کد OTP"""
     
     phone = serializers.CharField(max_length=20)
     code = serializers.CharField(max_length=6, min_length=6)
@@ -71,30 +62,26 @@ class VerifyOTPSerializer(serializers.Serializer):
         phone = attrs.get('phone')
         code = attrs.get('code')
         
-        # نرمالایز کردن شماره
         phone = normalize_phone(phone)
         
         if not phone:
             raise serializers.ValidationError({"phone": "شماره تلفن معتبر نیست"})
         
-        print(f"🔍 Searching for phone: {phone}, code: {code}")
+        print(f" Searching for phone: {phone}, code: {code}")
         
-        # جستجوی OTP
         try:
             otp = OTP.objects.get(phone=phone, code=code, is_used=False)
-            print(f"✅ OTP found: {otp.code}, expires_at: {otp.expires_at}")
+            print(f" OTP found: {otp.code}, expires_at: {otp.expires_at}")
         except OTP.DoesNotExist:
-            # لاگ دیباگ
             latest = OTP.objects.filter(phone=phone).first()
             if latest:
-                print(f"❌ Last OTP for {phone}: code={latest.code}, is_used={latest.is_used}, expired={latest.expires_at < timezone.now()}")
+                print(f" Last OTP for {phone}: code={latest.code}, is_used={latest.is_used}, expired={latest.expires_at < timezone.now()}")
             else:
-                print(f"❌ No OTP found for {phone}")
+                print(f" No OTP found for {phone}")
             raise serializers.ValidationError({"code": "کد تأیید اشتباه یا منقضی شده است"})
         
-        # بررسی انقضا
         if otp.expires_at < timezone.now():
-            print(f"❌ OTP expired: {otp.expires_at} < {timezone.now()}")
+            print(f" OTP expired: {otp.expires_at} < {timezone.now()}")
             raise serializers.ValidationError({"code": "کد تأیید منقضی شده است"})
         
         attrs['otp'] = otp
@@ -105,11 +92,9 @@ class VerifyOTPSerializer(serializers.Serializer):
         otp = self.validated_data['otp']
         phone = self.validated_data['phone']
         
-        # علامتگذاری به عنوان استفاده شده
         otp.is_used = True
         otp.save()
         
-        # ایجاد یا پیدا کردن کاربر
         user, created = User.objects.get_or_create(
             phone=phone,
             defaults={
@@ -122,7 +107,6 @@ class VerifyOTPSerializer(serializers.Serializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    """ارسال کد برای ورود"""
     
     phone = serializers.CharField(max_length=20)
     
@@ -132,7 +116,6 @@ class LoginSerializer(serializers.Serializer):
         if not value:
             raise serializers.ValidationError("شماره تلفن معتبر نیست")
         
-        # بررسی وجود کاربر
         if not User.objects.filter(phone=value).exists():
             raise serializers.ValidationError("کاربری با این شماره یافت نشد")
         
@@ -141,18 +124,15 @@ class LoginSerializer(serializers.Serializer):
     def save(self):
         phone = self.validated_data['phone']
         
-        # غیرفعال کردن OTPهای قبلی
         OTP.objects.filter(phone=phone, is_used=False).update(is_used=True)
         
-        # تولید کد
         code = str(random.randint(100000, 999999))
         
-        # ایجاد OTP جدید
         otp = OTP.objects.create(
             phone=phone,
             code=code,
             expires_at=timezone.now() + timedelta(minutes=2)
         )
         
-        print(f"📱 Login OTP for {phone}: {code}")
+        print(f" Login OTP for {phone}: {code}")
         return otp

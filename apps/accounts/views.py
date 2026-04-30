@@ -12,24 +12,24 @@ from .models import OTP, User
 User = get_user_model()
 
 class RegisterSendOTPView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [ AllowAny ]
     
     def post(self, request):
         phone = request.data.get('phone')
         if not phone:
-            return Response({'success': False, 'error': 'the phoen number is must be enter it !'}, status=400)
+            return Response({'success': False, 'error': 'the phoen number is must be enter it !!thanks for attention this matter'}, status=400)
         
-        success, message = OTPService.send_otp(phone)
-        #this fields for sample mode mot use the opperations when run the systems 
+        success, message = OTPService.send_otp( phone )
+        #this fields for sample mode mot use the opperations when run the systems for when user cant get the code and then user use the last otp code resived 
         code_for_test = None
         if success:
             try:
                 otp = OTP.objects.filter(phone=phone, is_used=False).latest('created_at')
-                code_for_test = otp.code
+                code_for_test = otp.code  
                 print(f"test code tests: {code_for_test}")
             except:
                 pass
-        
+
         return Response({
             'success': success,
             'message': message,
@@ -70,15 +70,14 @@ class VerifyOTPView(APIView):
             })
         
         return Response({'success': False, 'error': message}, status=400)
-
-
+# for deffens the  DOS
 class LoginSendOTPView(APIView):
     permission_classes = [AllowAny]
     
     def post(self, request):
         phone = request.data.get('phone')
         if not phone:
-            return Response({'success': False, 'error': 'شماره موبایل الزامی است'}, status=400)
+            return Response({'success': False, 'error': 'ples ENTER YOUR PHONE !'}, status=400)
         
         from core.services.sms_service import OTPService as OTPServiceClass
         normalized_phone = OTPServiceClass.normalize_phone(phone)
@@ -86,7 +85,7 @@ class LoginSendOTPView(APIView):
         try:
             user = User.objects.get(phone=normalized_phone)
         except User.DoesNotExist:
-            return Response({'success': False, 'error': 'کاربری با این شماره یافت نشد'}, status=404)
+            return Response({'success': False, 'error': 'not found any user and mobile number her '}, status=404)
         
         success, message = OTPService.send_otp(phone)
         
@@ -104,7 +103,7 @@ class LoginSendOTPView(APIView):
             'code_for_test': code_for_test
         }, status=200 if success else 400)
 
-
+#this for possition of user or users   when logging in pass (like logging in 2 days ago the user is loggined  )
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -114,6 +113,6 @@ class LogoutView(APIView):
             if refresh_token:
                 token = RefreshToken(refresh_token)
                 token.blacklist()
-            return Response({'success': True, 'message': 'با موفقیت خارج شدید'})
+            return Response({'success': True, 'message': 'succses exit'})
         except Exception:
-            return Response({'success': True, 'message': 'خروج انجام شد'})
+            return Response({'success': True, 'message': 'exit'})

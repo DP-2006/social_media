@@ -50,7 +50,6 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def mark_read(self, request, pk=None, conversation_pk=None):
-        """علامت‌گذاری پیام‌ها به عنوان خوانده شده"""
         messages = Message.objects.filter(
             conversation_id=conversation_pk,
             sender__not=request.user,

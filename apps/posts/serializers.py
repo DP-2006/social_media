@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Post, Comment, Like
+from rest_framework.exceptions import PermissionDenied
 
 class PostSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
@@ -99,3 +100,21 @@ class CommentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
+        
+class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        return Post.objects.all()
+    
+    def perform_update(self, serializer):
+        post = self.get_object()
+        if post.user != self.request.user:
+            raise PermissionDenied("شما فقط می‌توانید پست خودتان را ویرایش کنید")
+        serializer.save()
+    
+    def perform_destroy(self, instance):
+        if instance.user != self.request.user:
+            raise PermissionDenied("شما فقط می‌توانید پست خودتان را حذف کنید")
+        instance.delete()
