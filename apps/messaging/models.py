@@ -8,7 +8,7 @@ from django.conf import settings
 from core.models.base_model import BaseModel
 
 
-class Conversation(BaseModel):#مکالمه بین کاربران 
+class Conversation(BaseModel):
     participants = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name='conversations'

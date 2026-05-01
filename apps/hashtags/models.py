@@ -9,8 +9,7 @@ from core.models.base_model import BaseModel
 
 
 class Hashtag(BaseModel):
-    """هشتگ"""
-    name = models.CharField(max_length=100, unique=True)  # بدون #
+    name = models.CharField(max_length=100, unique=True)  
     usage_count = models.IntegerField(default=0)
 
     class Meta:
@@ -28,7 +27,6 @@ class Hashtag(BaseModel):
 
 
 class PostHashtag(BaseModel):
-    """رابطه پست و هشتگ (Many-to-Many)"""
     post = models.ForeignKey(
         'posts.Post',
         on_delete=models.CASCADE,
