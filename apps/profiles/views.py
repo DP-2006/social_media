@@ -7,13 +7,12 @@ from django.contrib.auth import get_user_model
 
 from .models import Profile
 from .serializers import ProfileSerializer, ProfileUpdateSerializer, UserProfileSerializer
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 User = get_user_model()
 
 class ProfileView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = [MultiPartParser, FormParser]
-    
     def get(self, request):
         profile = get_object_or_404(Profile, user=request.user)
         serializer = ProfileSerializer(profile)
@@ -28,14 +27,14 @@ class ProfileView(APIView):
         serializer = ProfileUpdateSerializer(
             profile, 
             data=request.data,
-            partial=False
+            #partial=False
         )
         
         if serializer.is_valid():
             serializer.save()
             return Response({
                 "success": True,
-                "message": "پروفایل با موفقیت بروزرسانی شد",
+                "message": "the profilr has sucsses fuly update it ",
                 "data": serializer.data
             }, status=status.HTTP_200_OK)
         
@@ -45,7 +44,6 @@ class ProfileView(APIView):
         }, status=status.HTTP_400_BAD_REQUEST)
     
     def patch(self, request):
-        """بروزرسانی جزئی پروفایل"""
         profile, created = Profile.objects.get_or_create(user=request.user)
         
         serializer = ProfileUpdateSerializer(
@@ -58,7 +56,7 @@ class ProfileView(APIView):
             serializer.save()
             return Response({
                 "success": True,
-                "message": "پروفایل با موفقیت بروزرسانی شد",
+                "message": "sucssefuly update profile ",
                 "data": serializer.data
             }, status=status.HTTP_200_OK)
         
@@ -73,18 +71,15 @@ class PublicProfileView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request, user_id):
-        """دریافت پروفایل عمومی یک کاربر"""
         user = get_object_or_404(User, id=user_id)
         profile = get_object_or_404(Profile, user=user)
         
-        # اگر پروفایل خصوصی است و کاربر دنبال نمی‌کند
         if profile.is_private and not request.user == user:
-            # بررسی کند که آیا کاربر دنبال می‌کند یا خیر
             is_following = profile.followers.filter(id=request.user.id).exists()
             if not is_following:
                 return Response({
                     "success": False,
-                    "error": "این حساب کاربری خصوصی است"
+                    "error": "this private account "
                 }, status=status.HTTP_403_FORBIDDEN)
         
         serializer = ProfileSerializer(profile)
@@ -101,29 +96,25 @@ class FollowToggleView(APIView):
         target_user = get_object_or_404(User, id=user_id)
         target_profile = get_object_or_404(Profile, user=target_user)
         
-        # نمی‌توان خودت را دنبال کنی
         if request.user == target_user:
             return Response({
                 "success": False,
-                "error": "نمی‌توانید خودتان را دنبال کنید"
+                "error": "YOU CAB T FOLLOW HER!"
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # دنبال کردن یا لغو دنبال کردن
         if target_profile.followers.filter(id=request.user.id).exists():
-            # لغو دنبال کردن
             target_profile.followers.remove(request.user)
             return Response({
                 "success": True,
                 "action": "unfollowed",
-                "message": f"دنبال کردن {target_user.username} لغو شد"
+                "message": f"folling{target_user.username} canceleed "
             }, status=status.HTTP_200_OK)
         else:
-            # دنبال کردن
             target_profile.followers.add(request.user)
             return Response({
                 "success": True,
                 "action": "followed",
-                "message": f"اکنون {target_user.username} را دنبال می‌کنید"
+                "message": f"now following {target_user.username}"
             }, status=status.HTTP_200_OK)
 
 
@@ -136,7 +127,7 @@ class FollowersListView(APIView):
         
         followers = profile.followers.all()
         followers_data = []
-        
+        # N + 1 proplem query error not performansing code 
         for follower in followers:
             follower_profile = Profile.objects.get(user=follower)
             followers_data.append({
@@ -180,10 +171,7 @@ class FollowingListView(APIView):
 
 
 class SearchUserView(APIView):
-    """
-    جستجوی کاربران
-    GET /api/profiles/search/?q=username
-    """
+    #GET /api/profiles/search/?q=username
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -192,7 +180,7 @@ class SearchUserView(APIView):
         if not query:
             return Response({
                 "success": False,
-                "error": "لطفاً عبارت جستجو را وارد کنید"
+                "error": "plese enter ypu pramt "
             }, status=status.HTTP_400_BAD_REQUEST)
         
         users = User.objects.filter(username__icontains=query)[:20]

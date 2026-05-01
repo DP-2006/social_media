@@ -40,12 +40,12 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
     
     def validate_bio(self, value):
         if len(value) > 500:
-            raise serializers.ValidationError("بیوگرافی نمی‌تواند بیشتر از 500 کاراکتر باشد")
+            raise serializers.ValidationError("bio is not have the over 500 car ")
         return value
     
     def validate_display_name(self, value):
         if len(value) > 100:
-            raise serializers.ValidationError("نام نمایشی نمی‌تواند بیشتر از 100 کاراکتر باشد")
+            raise serializers.ValidationError("name cant is bigger the 100 car ")
         return value
 
 class UserProfileSerializer(serializers.ModelSerializer):

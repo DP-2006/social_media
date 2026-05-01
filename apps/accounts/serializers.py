@@ -65,7 +65,7 @@ class VerifyOTPSerializer(serializers.Serializer):
         phone = normalize_phone(phone)
         
         if not phone:
-            raise serializers.ValidationError({"phone": "شماره تلفن معتبر نیست"})
+            raise serializers.ValidationError({"phone": "the phone number is not valid "})
         
         print(f" Searching for phone: {phone}, code: {code}")
         
@@ -78,11 +78,11 @@ class VerifyOTPSerializer(serializers.Serializer):
                 print(f" Last OTP for {phone}: code={latest.code}, is_used={latest.is_used}, expired={latest.expires_at < timezone.now()}")
             else:
                 print(f" No OTP found for {phone}")
-            raise serializers.ValidationError({"code": "کد تأیید اشتباه یا منقضی شده است"})
+            raise serializers.ValidationError({"code":" the code is false or expier it "})
         
         if otp.expires_at < timezone.now():
             print(f" OTP expired: {otp.expires_at} < {timezone.now()}")
-            raise serializers.ValidationError({"code": "کد تأیید منقضی شده است"})
+            raise serializers.ValidationError({"code": "the code has been expier it "})
         
         attrs['otp'] = otp
         attrs['phone'] = phone
@@ -114,10 +114,10 @@ class LoginSerializer(serializers.Serializer):
         value = normalize_phone(value)
         
         if not value:
-            raise serializers.ValidationError("شماره تلفن معتبر نیست")
+            raise serializers.ValidationError("the phone number is not valid ")
         
         if not User.objects.filter(phone=value).exists():
-            raise serializers.ValidationError("کاربری با این شماره یافت نشد")
+            raise serializers.ValidationError("not found any user has this phonenumber ")
         
         return value
     
