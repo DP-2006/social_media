@@ -9,13 +9,15 @@ from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 from django.db.models import Count
 from .services.ollama_client import OllamaClient
+from rest_framework.views import APIView
+from rest_framework import permissions, status
+
 #from django import model.post
 User = get_user_model()
 
 
 @method_decorator(staff_member_required, name='dispatch')
 class AdminAnalyzeUserView(View):
-    """تحلیل کامل کاربر با هوش مصنوعی از طریق پنل ادمین"""
     
     def get(self, request, user_id):
         try:
@@ -253,6 +255,95 @@ except Exception as e:
     posts_text = "پستی وجود ندارد"
 
 
+
+class ExploreFeedView(APIView):
+
+    #GET /api/ml/explore/?limit=20&offset=0&use_ollama=true
+    
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+
+        limit = min(int(request.query_params.get('limit', 20)), 50)
+        offset = int(request.query_params.get('offset', 0))
+        use_ollama = request.query_params.get('use_ollama', 'true').lower() == 'true'
+        
+        feed_service = SmartFeedService(request.user)
+        feed_data = feed_service.get_smart_feed(
+            limit=limit,
+            offset=offset,
+            use_ollama=use_ollama
+        )
+        
+
+        serializer = PostSerializer (
+
+            feed_data['posts'],
+            many=True,
+           context={'request': request}
+
+        )
+        
+        response_posts = []
+        for idx, post_data in enumerate(serializer.data):
+            post_data['explore_score'] = feed_data['scores'][idx]
+            post_data['explore_reasons'] = feed_data['reasons'][idx]
+            response_posts.append(post_data)
+        
+        return Response({
+            "success": True,
+            "data": {
+                "posts": response_posts,
+                "used_hashtags": feed_data['used_hashtags'],
+                "pagination": {
+                    "total_count": feed_data['total_count'],
+                    "has_next": feed_data['has_next'],
+                    "limit": limit,
+                    "offset": offset
+                }
+            }
+        }, status=status.HTTP_200_OK)
+
+
+class RefreshExploreView(APIView):
+    
+    #POST /api/ml/explore/refresh/
+
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request):
+        cache.delete_pattern(f"smart_feed_{request.user.id}_*")
+        
+        ollama_service = OllamaHashtagService(request.user)
+        hashtags = ollama_service.get_recommended_hashtags(force_refresh=True)
+        
+        return Response({
+            "success": True,
+            "message": "اکسپلور در حال بازسازی است",
+            "hashtags": hashtags
+        }, status=status.HTTP_200_OK)
+
+
+class HashtagRecommendationsView(APIView):
+  
+    #GET /api/ml/recommended-hashtags/?refresh=false
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        refresh = request.query_params.get('refresh', 'false').lower() == 'true'
+        
+        ollama_service = OllamaHashtagService(request.user)
+        hashtags = ollama_service.get_recommended_hashtags(force_refresh=refresh)
+        
+
+        return Response({
+            "success": True,
+            "data": {
+                "hashtags": hashtags,
+                "source": "ollama" if refresh else "cache",
+                "count": len(hashtags)
+            }
+        }, status=status.HTTP_200_OK)
 
 
 
