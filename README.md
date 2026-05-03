@@ -1,5 +1,4 @@
 # social_media-instagram-
-better than wen you see !
 <div align="center">
 
 # 🧠 Netzir - AI-Powered Social Network
@@ -16,7 +15,7 @@ better than wen you see !
 <p align="center">
   <strong>An Instagram‑Inspired Network built with Django</strong>  
   <br><br>
-  ⭐ <em>"Better than when you see!"</em> ⭐
+  ⭐ <em>"Better than wen you see!"</em> ⭐
 </p>
 
 </p>
