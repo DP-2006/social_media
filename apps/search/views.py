@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from django.conf import settings
 
 from .services.ollama_search import OllamaSearchService
-from .services.simple_search import SimpleSearchService
+#from .services.simple_search import SimpleSearchService
 
 
 def get_search_service(request_user=None):
