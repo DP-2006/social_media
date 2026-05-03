@@ -40,7 +40,7 @@
 | 👤 **Authentication** | OTP Registration/Login, JWT Tokens |
 | 📝 **Posts** | Create, Edit, Delete, Like, Comment |
 | 🔍 **Hashtags** | Advanced hashtag search |
-| 🤖 **AI Intelligence** | Post & User analysis with Qwen 7B |
+| 🤖 **AI Intelligence** | Post & User analysis with Qwen 7B and gemma:27b |
 | 📊 **User Analytics** | Behavior pattern recognition |
 | ✅ **Health Check** | Ollama & Database status |
 | 💬 **Direct Messages** | Private chat between users |
