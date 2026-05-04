@@ -107,3 +107,51 @@ class OllamaSearchService(BaseSearchService):
         keywords = [w.lower() for w in words if w.lower() not in stop_words and len(w) > 2]
         
         return keywords[:5]
+
+
+    def search_suggestions(self, query, limit=10):
+        
+        if not query or len(query) < 2:
+            return {'users': [], 'hashtags': []}
+        
+        cache_key = f"search_suggestions_{hash(query)}"
+        cached = cache.get(cache_key)
+        
+        if cached:
+            return cached
+        
+        suggestions = {
+            'users': [],
+            'hashtags': []
+        }
+        
+        users = User.objects.filter(
+            Q(username__icontains=query) |
+            Q(profile__display_name__icontains=query)
+        )[:5]
+        
+        for user in users:
+            profile = getattr(user, 'profile', None)
+            suggestions['users'].append({
+                'type': 'user',
+                'text': user.username,
+                'display': profile.display_name if profile else user.username,
+                'image': profile.profile_image.url if profile and profile.profile_image else None,
+                'id': str(user.id)
+            })
+        
+        hashtags = Hashtag.objects.filter(
+            name__icontains=query.replace('#', '')
+        ).order_by('-usage_count')[:5]
+        
+        for tag in hashtags:
+            suggestions['hashtags'].append({
+                'type': 'hashtag',
+                'text': f"#{tag.name}",
+                'count': tag.usage_count,
+                'name': tag.name
+            })
+        
+        cache.set(cache_key, suggestions, 60 * 10) 
+        
+        return suggestions

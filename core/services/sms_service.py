@@ -411,8 +411,6 @@ class SMSProvider(ABC):
 
 
 class KavenegarSMS(SMSProvider):
-    """سرویس پیامک کاوه نگار"""
-    
     def __init__(self, api_key: str = None, sender: str = None):
         from django.conf import settings
         self.api_key = api_key or getattr(settings, 'KAVENEGAR_API_KEY', '4D706439326650596F41677543517261356B6A614142663053775846754D764D41474F424C69386E586D6B3D')
@@ -431,19 +429,19 @@ class KavenegarSMS(SMSProvider):
             
             response = api.sms_send(params)
             logger.info(f"SMS sent to {phone}: {response}")
-            print(f"✅ SMS sent to {phone}")
+            print(f"SMS sent to {phone}")
             return True
             
         except Exception as e:
             logger.error(f"Failed to send SMS: {e}")
-            print(f"❌ خطا در ارسال SMS: {e}")
+            print(f" خطا در ارسال SMS: {e}")
             return False
 
 
 class FakeSMSProvider(SMSProvider):
     
     def send(self, phone: str, code: str) -> bool:
-        print(f"📱 [FAKE SMS] To: {phone} | Code: {code}")
+        print(f" [FAKE SMS] To: {phone} | Code: {code}")
         return True
 
 
@@ -467,20 +465,16 @@ def get_sms_provider():
 
 class OTPService:
     CODE_LENGTH = 6
-    EXPIRY_MINUTES = 5  # 5 دقیقه اعتبار
+    EXPIRY_MINUTES = 5 
     MAX_ATTEMPTS = 3
     
     @staticmethod
     def normalize_phone(phone):
-        """نرمالایز شماره تلفن به فرمت 98XXXXXXXXXX"""
         if not phone:
             return None
-        # حذف همه چیز بجز اعداد
         cleaned = re.sub(r'\D', '', str(phone))
-        # حذف صفر اول
         if cleaned.startswith('0'):
             cleaned = cleaned[1:]
-        # اضافه کردن 98 اگر لازم باشد
         if not cleaned.startswith('98') and len(cleaned) == 10:
             cleaned = '98' + cleaned
         return cleaned
@@ -498,7 +492,7 @@ class OTPService:
         if not phone:
             return False, "شماره تلفن معتبر نیست"
         
-        print(f"📱 Send OTP to normalized phone: {phone}")
+        print(f" Send OTP to normalized phone: {phone}")
         
         # بررسی ریت لیمیت
         recent_count = OTP.objects.filter(

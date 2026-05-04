@@ -7,6 +7,13 @@ from django.conf import settings
 
 from .services.ollama_search import OllamaSearchService
 from .services.simple_search import SimpleSearchService
+from .serializers import (
+    SearchResultSerializer,
+    SearchSuggestionsSerializer,
+    SearchConfigSerializer,
+    UserSearchSerializer,
+    HashtagSearchSerializer
+)
 
 
 def get_search_service(request_user=None):
@@ -19,7 +26,7 @@ def get_search_service(request_user=None):
 
 
 class GlobalSearchView(APIView):
-    #  GET /api/search/?q=متن&limit=20&force_simple=false
+    #GET /api/search/?q=متن&limit=20&force_simple=false
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -48,15 +55,16 @@ class GlobalSearchView(APIView):
         
         results = search_service.search_all(query, limit, offset)
         
+        serializer = SearchResultSerializer(results)
+        
         return Response({
             "success": True,
-            "data": results
+            "data": serializer.data
         }, status=status.HTTP_200_OK)
 
 
 class SearchByUsernameView(APIView):
-    # GET /api/search/user/@username/
-    # GET /api/search/user/?username=alireza
+    #GET /api/search/user/@username/
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request, username=None):
@@ -80,14 +88,18 @@ class SearchByUsernameView(APIView):
                 "error": f"کاربری با username '{query_username}' یافت نشد"
             }, status=status.HTTP_404_NOT_FOUND)
         
+        serializer = UserSearchSerializer(data=user_data[0])
+        serializer.is_valid()
+        
         return Response({
             "success": True,
-            "data": user_data[0]
+            "data": serializer.data
         }, status=status.HTTP_200_OK)
 
 
 class SearchUsersView(APIView):
     #GET /api/search/users/?q=ali&limit=20
+   
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -109,55 +121,20 @@ class SearchUsersView(APIView):
         search_service = get_search_service(request.user)
         users = search_service.search_users(query, limit)
         
+        serializer = UserSearchSerializer(users, many=True)
+        
         return Response({
             "success": True,
             "data": {
                 "count": len(users),
-                "users": users
-            }
-        }, status=status.HTTP_200_OK)
-
-
-class SearchPostsView(APIView):
-    #GET /api/search/posts/?q=متن&limit=20&use_ollama=true
-    permission_classes = [permissions.IsAuthenticated]
-    
-    def get(self, request):
-        query = request.query_params.get('q', '').strip()
-        limit = min(int(request.query_params.get('limit', 20)), 50)
-        use_ollama = request.query_params.get('use_ollama', 'true').lower() == 'true'
-        
-        if not query:
-            return Response({
-                "success": False,
-                "error": "لطفاً عبارت جستجو را وارد کنید"
-            }, status=status.HTTP_400_BAD_REQUEST)
-        
-        if use_ollama and getattr(settings, 'SEARCH_USE_OLLAMA', True):
-            search_service = OllamaSearchService(request.user)
-        else:
-            search_service = SimpleSearchService(request.user)
-        
-        smart_keywords = []
-        if use_ollama and hasattr(search_service, 'extract_keywords'):
-            smart_keywords = search_service.extract_keywords(query)
-        
-        posts = search_service.search_posts(query, smart_keywords, limit)
-        
-        return Response({
-            "success": True,
-            "data": {
-                "query": query,
-                "smart_keywords": smart_keywords,
-                "used_ollama": use_ollama and bool(smart_keywords),
-                "count": len(posts),
-                "posts": posts
+                "users": serializer.data
             }
         }, status=status.HTTP_200_OK)
 
 
 class SearchHashtagsView(APIView):
-    #GET /api/search/hashtags/?q=tag&limit=20
+
+   # GET /api/search/hashtags/?q=tag&limit=20
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -173,17 +150,19 @@ class SearchHashtagsView(APIView):
         search_service = get_search_service(request.user)
         hashtags = search_service.search_hashtags(query, limit)
         
+        serializer = HashtagSearchSerializer(hashtags, many=True)
+        
         return Response({
             "success": True,
             "data": {
                 "count": len(hashtags),
-                "hashtags": hashtags
+                "hashtags": serializer.data
             }
         }, status=status.HTTP_200_OK)
 
 
 class SearchSuggestionsView(APIView):
-    #GET /api/search/suggestions/?q=te
+   # GET /api/search/suggestions/?q=te
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -199,22 +178,33 @@ class SearchSuggestionsView(APIView):
             }, status=status.HTTP_200_OK)
         
         search_service = get_search_service(request.user)
-        suggestions = search_service.search_suggestions(query) if hasattr(search_service, 'search_suggestions') else {'users': [], 'hashtags': []}
+        
+        if hasattr(search_service, 'search_suggestions'):
+            suggestions = search_service.search_suggestions(query)
+        else:
+            suggestions = {'users': [], 'hashtags': []}
+        
+        serializer = SearchSuggestionsSerializer(suggestions)
         
         return Response({
             "success": True,
-            "data": suggestions
+            "data": serializer.data
         }, status=status.HTTP_200_OK)
 
 
 class SearchConfigView(APIView):
+   # GET /api/search/config/
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
+        config_data = {
+            "use_ollama": getattr(settings, 'SEARCH_USE_OLLAMA', True),
+            "ollama_timeout": getattr(settings, 'SEARCH_OLLAMA_TIMEOUT', 30),
+        }
+        
+        serializer = SearchConfigSerializer(config_data)
+        
         return Response({
             "success": True,
-            "data": {
-                "use_ollama": getattr(settings, 'SEARCH_USE_OLLAMA', True),
-                "ollama_timeout": getattr(settings, 'SEARCH_OLLAMA_TIMEOUT', 30),
-            }
-        })
+            "data": serializer.data
+        }, status=status.HTTP_200_OK)
