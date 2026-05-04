@@ -18,7 +18,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'phone',
             'display_name',
             'bio',
-            'avatar',
+            
             'profile_image',
             'is_private',
             'is_active',
@@ -33,7 +33,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         fields = [
             'display_name',
             'bio',
-            'avatar',
+            
             'profile_image',
             'is_private',
         ]

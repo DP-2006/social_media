@@ -100,11 +100,11 @@ DATABASES = {
     }
 }
 
-
+#pstgresql 
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'postgres',
+#         'NAME': 'postgres',hggj
 #         'USER': 'postgres',
 #         'PASSWORD': '123456',
 #         'HOST': '192.168.1.110',
@@ -112,7 +112,7 @@ DATABASES = {
 #     }
 # }
 
-
+#sql server 
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'sql_server.pyodbc',
@@ -174,14 +174,10 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
-######################################
-SMS_PROVIDER = 'kavenegar' 
+#SMS_PROVIDER = 'kavenegar' 
 KAVENEGAR_API_KEY = 'YOUR_API_KEY_HERE'
 SMS_SENDER = '10008663'
-
-SMS_PROVIDER = 'kavenegar'  
-
-
+SMS_PROVIDER = 'fake'  
 
 
 REST_FRAMEWORK = {
@@ -239,7 +235,7 @@ CELERY_BROKER_TRANSPORT = 'django'
 
 KAVENEGAR_API_KEY = '4D706439326650596F41677543517261356B6A614142663053775846754D764D41474F424C69386E586D6B3D'
 SMS_SENDER = '2000660110'
-SMS_PROVIDER = 'kavenegar' 
+#SMS_PROVIDER = 'kavenegar' 
 
 
 
