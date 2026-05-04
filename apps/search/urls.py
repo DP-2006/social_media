@@ -28,3 +28,5 @@ urlpatterns = [
     path('suggestions/', views.SearchSuggestionsView.as_view(), name='search-suggestions'),
     path('config/', views.SearchConfigView.as_view(), name='search-config'),
 ]
+
+

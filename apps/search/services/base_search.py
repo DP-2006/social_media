@@ -10,6 +10,7 @@ User = get_user_model()
 
 
 class BaseSearchService(ABC):
+    """کلاس پایه برای سرویس‌های جستجو"""
     
     def __init__(self, request_user=None):
         self.request_user = request_user
@@ -25,12 +26,12 @@ class BaseSearchService(ABC):
         pass
     
     def search_users(self, query, limit=20):
-        """جستجوی کاربران بر اساس username (تغییر کرده)"""
+        """جستجوی کاربران بر اساس username"""
         if not query or len(query) < 2:
             return []
         
         users = User.objects.filter(
-            Q(username__icontains=query)  # اولویت با username
+            Q(username__icontains=query)
         ).select_related('profile')[:limit]
         
         if not users:
@@ -47,11 +48,16 @@ class BaseSearchService(ABC):
                 'display_name': profile.display_name if profile else user.username,
                 'profile_image': profile.profile_image.url if profile and profile.profile_image else None,
                 'bio': profile.bio if profile else '',
+                'is_private': profile.is_private if profile else False,
+                'is_following': False,
+                'followers_count': 0,
+                'can_view': True
             })
         
         return results
     
     def search_users_exact(self, username, limit=1):
+        """جستجوی دقیق با username کامل"""
         try:
             user = User.objects.get(username__iexact=username)
             profile = getattr(user, 'profile', None)
@@ -61,11 +67,16 @@ class BaseSearchService(ABC):
                 'display_name': profile.display_name if profile else user.username,
                 'profile_image': profile.profile_image.url if profile and profile.profile_image else None,
                 'bio': profile.bio if profile else '',
+                'is_private': profile.is_private if profile else False,
+                'is_following': False,
+                'followers_count': 0,
+                'can_view': True
             }]
         except User.DoesNotExist:
             return []
     
     def search_hashtags(self, query, limit=20):
+        """جستجوی هشتگ‌ها"""
         if not query or len(query) < 2:
             return []
         
@@ -84,6 +95,7 @@ class BaseSearchService(ABC):
         ]
     
     def search_posts(self, query, keywords=None, limit=20):
+        """جستجوی پست‌ها"""
         if not query and not keywords:
             return []
         
@@ -91,7 +103,6 @@ class BaseSearchService(ABC):
         
         if query:
             search_q |= Q(content__icontains=query)
-            # جستجو در username صاحب پست
             search_q |= Q(user__username__icontains=query)
         
         if keywords:

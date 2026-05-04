@@ -5,10 +5,16 @@ from .base_search import BaseSearchService
 
 
 class SimpleSearchService(BaseSearchService):
+    """
+    سرویس جستجوی ساده (بدون Ollama)
+    """
     
     def search_all(self, query, limit=20, offset=0):
+        """جستجوی جهانی ساده"""
+        
         # استخراج هشتگ‌ها از متن
         hashtags = re.findall(r'#([a-zA-Z0-9_\u0600-\u06FF]+)', query)
+        
         results = {
             'query': query,
             'source': 'simple',
@@ -17,6 +23,7 @@ class SimpleSearchService(BaseSearchService):
             'hashtags': self.search_hashtags(query, limit=10),
             'posts': self.search_posts(query, hashtags, limit=limit),
         }
+        
         return results
     
     def extract_keywords(self, query):

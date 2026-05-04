@@ -17,6 +17,7 @@ from .serializers import (
 
 
 def get_search_service(request_user=None):
+    """دریافت سرویس جستجو بر اساس تنظیمات"""
     use_ollama = getattr(settings, 'SEARCH_USE_OLLAMA', True)
     
     if use_ollama:
@@ -26,7 +27,7 @@ def get_search_service(request_user=None):
 
 
 class GlobalSearchView(APIView):
-    #GET /api/search/?q=متن&limit=20&force_simple=false
+    """جستجوی جهانی"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -54,7 +55,6 @@ class GlobalSearchView(APIView):
             search_service = get_search_service(request.user)
         
         results = search_service.search_all(query, limit, offset)
-        
         serializer = SearchResultSerializer(results)
         
         return Response({
@@ -64,7 +64,7 @@ class GlobalSearchView(APIView):
 
 
 class SearchByUsernameView(APIView):
-    #GET /api/search/user/@username/
+    """جستجوی دقیق کاربر با username"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request, username=None):
@@ -98,8 +98,7 @@ class SearchByUsernameView(APIView):
 
 
 class SearchUsersView(APIView):
-    #GET /api/search/users/?q=ali&limit=20
-   
+    """جستجوی کاربران (لیستی)"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -120,7 +119,6 @@ class SearchUsersView(APIView):
         
         search_service = get_search_service(request.user)
         users = search_service.search_users(query, limit)
-        
         serializer = UserSearchSerializer(users, many=True)
         
         return Response({
@@ -132,9 +130,46 @@ class SearchUsersView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-class SearchHashtagsView(APIView):
+class SearchPostsView(APIView):
+    """جستجوی پست‌ها"""
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        query = request.query_params.get('q', '').strip()
+        limit = min(int(request.query_params.get('limit', 20)), 50)
+        use_ollama = request.query_params.get('use_ollama', 'true').lower() == 'true'
+        
+        if not query:
+            return Response({
+                "success": False,
+                "error": "لطفاً عبارت جستجو را وارد کنید"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        if use_ollama and getattr(settings, 'SEARCH_USE_OLLAMA', True):
+            search_service = OllamaSearchService(request.user)
+        else:
+            search_service = SimpleSearchService(request.user)
+        
+        smart_keywords = []
+        if use_ollama and hasattr(search_service, 'extract_keywords'):
+            smart_keywords = search_service.extract_keywords(query)
+        
+        posts = search_service.search_posts(query, smart_keywords, limit)
+        
+        return Response({
+            "success": True,
+            "data": {
+                "query": query,
+                "smart_keywords": smart_keywords,
+                "used_ollama": use_ollama and bool(smart_keywords),
+                "count": len(posts),
+                "posts": posts
+            }
+        }, status=status.HTTP_200_OK)
 
-   # GET /api/search/hashtags/?q=tag&limit=20
+
+class SearchHashtagsView(APIView):
+    """جستجوی هشتگ‌ها"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -149,7 +184,6 @@ class SearchHashtagsView(APIView):
         
         search_service = get_search_service(request.user)
         hashtags = search_service.search_hashtags(query, limit)
-        
         serializer = HashtagSearchSerializer(hashtags, many=True)
         
         return Response({
@@ -162,7 +196,7 @@ class SearchHashtagsView(APIView):
 
 
 class SearchSuggestionsView(APIView):
-   # GET /api/search/suggestions/?q=te
+    """پیشنهادات لحظه‌ای جستجو (autocomplete)"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -193,7 +227,7 @@ class SearchSuggestionsView(APIView):
 
 
 class SearchConfigView(APIView):
-   # GET /api/search/config/
+    """دریافت تنظیمات جستجو"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):

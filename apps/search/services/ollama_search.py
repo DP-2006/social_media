@@ -1,16 +1,24 @@
 # apps/search/services/ollama_search.py
 
-import json
 import re
 import logging
 from django.core.cache import cache
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.db.models import Q
+from apps.hashtags.models import Hashtag
+
 from .base_search import BaseSearchService
 
 logger = logging.getLogger(__name__)
+User = get_user_model()
 
 
 class OllamaSearchService(BaseSearchService):
+    """
+    سرویس جستجوی هوشمند با استفاده از Ollama
+    """
+    
     def __init__(self, request_user=None):
         super().__init__(request_user)
         self._ollama_client = None
@@ -39,7 +47,6 @@ class OllamaSearchService(BaseSearchService):
         if cached:
             return cached
         
-        # استخراج کلمات کلیدی هوشمند با Ollama
         smart_keywords = self.extract_keywords(query)
         
         results = {
@@ -51,14 +58,13 @@ class OllamaSearchService(BaseSearchService):
             'posts': self.search_posts(query, smart_keywords, limit=limit),
         }
         
-        cache.set(cache_key, results, 60 * 5)  # کش 5 دقیقه
+        cache.set(cache_key, results, 60 * 5)
         
         return results
     
     def extract_keywords(self, query):
-        """
-        استخراج کلمات کلیدی هوشمند با استفاده از Ollama
-        """
+        """استخراج کلمات کلیدی هوشمند با استفاده از Ollama"""
+        
         ollama = self._get_ollama_client()
         
         if not ollama or not self.use_ollama:
@@ -90,7 +96,7 @@ class OllamaSearchService(BaseSearchService):
                 keywords = re.findall(r'[a-zA-Z0-9_\u0600-\u06FF]+', response)
                 keywords = [k.lower() for k in keywords if len(k) > 2][:5]
                 
-                cache.set(cache_key, keywords, 60 * 60)  # کش 1 ساعت
+                cache.set(cache_key, keywords, 60 * 60)
                 return keywords
             
             return self._simple_extract(query)
@@ -107,9 +113,9 @@ class OllamaSearchService(BaseSearchService):
         keywords = [w.lower() for w in words if w.lower() not in stop_words and len(w) > 2]
         
         return keywords[:5]
-
-
+    
     def search_suggestions(self, query, limit=10):
+        """پیشنهادات لحظه‌ای جستجو"""
         
         if not query or len(query) < 2:
             return {'users': [], 'hashtags': []}
@@ -125,6 +131,7 @@ class OllamaSearchService(BaseSearchService):
             'hashtags': []
         }
         
+        # پیشنهاد کاربران
         users = User.objects.filter(
             Q(username__icontains=query) |
             Q(profile__display_name__icontains=query)
@@ -140,6 +147,7 @@ class OllamaSearchService(BaseSearchService):
                 'id': str(user.id)
             })
         
+        # پیشنهاد هشتگ
         hashtags = Hashtag.objects.filter(
             name__icontains=query.replace('#', '')
         ).order_by('-usage_count')[:5]
@@ -152,6 +160,6 @@ class OllamaSearchService(BaseSearchService):
                 'name': tag.name
             })
         
-        cache.set(cache_key, suggestions, 60 * 10) 
+        cache.set(cache_key, suggestions, 60 * 10)
         
         return suggestions
