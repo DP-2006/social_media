@@ -1,7 +1,7 @@
 # social_media-instagram-
 <div align="center">
 
-# 🧠 Netzir - AI-Powered Social Network
+# 🧠 Social Network
 
 <img src="https://img.shields.io/badge/Django-5.0-092E20?style=for-the-badge&logo=django&logoColor=white"/>
 <img src="https://img.shields.io/badge/Ollama-0.1.8-000000?style=for-the-badge&logo=ollama&logoColor=white"/>
