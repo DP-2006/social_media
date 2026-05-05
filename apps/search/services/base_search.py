@@ -5,7 +5,7 @@ from django.db.models import Q, Count
 from django.contrib.auth import get_user_model
 from apps.posts.models import Post
 from apps.hashtags.models import Hashtag
-
+from apps.blocks.views import BlockedUsersMixin
 User = get_user_model()
 
 
@@ -115,3 +115,35 @@ class BaseSearchService(ABC):
         
         from apps.posts.serializers import PostSerializer
         return PostSerializer(posts, many=True, context={'request': None}).data
+
+class BaseSearchService(ABC, BlockedUsersMixin):  
+    
+    def __init__(self, request_user=None):
+        self.request_user = request_user
+    
+    def search_users(self, query, limit=20):
+        """جستجوی کاربران بدون بلاک شده‌ها"""
+        if not query or len(query) < 2:
+            return []
+        
+        users = User.objects.filter(
+            Q(username__icontains=query)
+        ).select_related('profile')
+        
+        if self.request_user:
+            users = self.exclude_blocked(users, self.request_user)
+        
+        users = users[:limit]
+        
+        results = []
+        for user in users:
+            profile = getattr(user, 'profile', None)
+            results.append({
+                'id': str(user.id),
+                'username': user.username,
+                'display_name': profile.display_name if profile else user.username,
+                'profile_image': profile.profile_image.url if profile and profile.profile_image else None,
+                'bio': profile.bio if profile else '',
+            })
+        
+        return results

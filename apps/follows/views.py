@@ -1,50 +1,99 @@
 # apps/follows/views.py
 
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
+
 from .models import Follow
 from .serializers import FollowSerializer, FollowerListSerializer
+from apps.blocks.views import BlockedUsersMixin
 
 User = get_user_model()
 
 
-class FollowerListView(generics.ListAPIView):
+# ========== لیست فالوورها با در نظر گرفتن بلاک ==========
+
+class FollowersListView(APIView, BlockedUsersMixin):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        
+        follows = Follow.objects.filter(
+            following=user
+        ).select_related('follower', 'follower__profile')
+        
+        # حذف کاربران بلاک شده 🚫
+        blocked_ids = self.get_mutually_blocked_ids(request.user)
+        follows = follows.exclude(follower_id__in=blocked_ids)
+        follows = follows.order_by('-created_at')
+        
+        results = []
+        for follow in follows:
+            follower = follow.follower
+            profile = getattr(follower, 'profile', None)
+            results.append({
+                "id": str(follower.id),
+                "username": follower.username,
+                "display_name": profile.display_name if profile else follower.username,
+                "profile_image": profile.profile_image.url if profile and profile.profile_image else None,
+                "followed_at": follow.created_at
+            })
+        
+        return Response({
+            "success": True,
+            "count": len(results),
+            "data": results
+        }, status=status.HTTP_200_OK)
+
+
+# ========== لیست افرادی که کاربر فالو کرده ==========
+
+class FollowingListView(generics.ListAPIView, BlockedUsersMixin):
     permission_classes = [IsAuthenticated]
     serializer_class = FollowerListSerializer
     
     def get_queryset(self):
         user_id = self.kwargs.get('user_id')
-        return Follow.objects.select_related('follower').filter(
-            following_id=user_id
-        ).only('id', 'created_at', 'follower__id', 'follower__username', 'follower__email')
-
-
-class FollowingListView(generics.ListAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = FollowerListSerializer
-    
-    def get_queryset(self):
-        user_id = self.kwargs.get('user_id')
-        return Follow.objects.select_related('following').filter(
+        user = get_object_or_404(User, id=user_id)
+        
+        follows = Follow.objects.select_related('following').filter(
             follower_id=user_id
         ).only('id', 'created_at', 'following__id', 'following__username', 'following__email')
+        
+        # حذف کاربران بلاک شده 🚫
+        blocked_ids = self.get_mutually_blocked_ids(self.request.user)
+        follows = follows.exclude(following_id__in=blocked_ids)
+        
+        return follows
 
 
-class FollowUserView(generics.GenericAPIView):
+# ========== فالو کردن کاربر (ساده) ==========
+
+class FollowUserView(APIView, BlockedUsersMixin):
     permission_classes = [IsAuthenticated]
     
     def post(self, request, user_id):
         follower = request.user
         following = get_object_or_404(User, id=user_id)
         
+        # بررسی فالو کردن خود
         if follower.id == following.id:
             return Response(
-                {'error': 'you cant follow her !'}, 
+                {'error': 'نمی‌توانید خودتان را فالو کنید!'}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
+        
+        # بررسی بلاک بودن 🚫
+        blocked_ids = self.get_mutually_blocked_ids(request.user)
+        if following.id in blocked_ids:
+            return Response({
+                "success": False,
+                "error": "نمی‌توانید این کاربر را فالو کنید (بلاک شده)"
+            }, status=status.HTTP_403_FORBIDDEN)
         
         follow, created = Follow.objects.get_or_create(
             follower=follower,
@@ -53,16 +102,19 @@ class FollowUserView(generics.GenericAPIView):
         
         if created:
             return Response(
-                {'message': f'you {following.username} follow'}, 
+                {'success': True, 'message': f'شما {following.username} را فالو کردید'}, 
                 status=status.HTTP_201_CREATED
             )
+        
         return Response(
-            {'message': 'you follow this user in past'}, 
+            {'success': False, 'message': 'شما قبلاً این کاربر را فالو کرده‌اید'}, 
             status=status.HTTP_200_OK
         )
 
 
-class UnfollowUserView(generics.GenericAPIView):
+# ========== آنفالو کردن کاربر (ساده) ==========
+
+class UnfollowUserView(APIView, BlockedUsersMixin):
     permission_classes = [IsAuthenticated]
     
     def post(self, request, user_id):
@@ -73,10 +125,93 @@ class UnfollowUserView(generics.GenericAPIView):
         
         if deleted_count > 0:
             return Response(
-                {'message': 'sucsse unfloow'}, 
+                {'success': True, 'message': 'با موفقیت آنفالو کردید'}, 
                 status=status.HTTP_200_OK
             )
+        
         return Response(
-            {'error': 'you dot follow this user'}, 
+            {'success': False, 'error': 'شما این کاربر را فالو نکرده‌اید'}, 
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+# ========== فالو/آنفالو (یک API برای هر دو) ==========
+
+class FollowToggleView(APIView, BlockedUsersMixin):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, user_id):
+        target_user = get_object_or_404(User, id=user_id)
+        
+        # بررسی فالو کردن خود
+        if request.user == target_user:
+            return Response({
+                "success": False,
+                "error": "نمی‌توانید خودتان را فالو کنید"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # بررسی بلاک بودن 🚫
+        blocked_ids = self.get_mutually_blocked_ids(request.user)
+        if target_user.id in blocked_ids:
+            return Response({
+                "success": False,
+                "error": "نمی‌توانید این کاربر را فالو کنید (بلاک شده)"
+            }, status=status.HTTP_403_FORBIDDEN)
+        
+        # بررسی وجود فالو
+        follow = Follow.objects.filter(
+            follower=request.user,
+            following=target_user
+        ).first()
+        
+        if follow:
+            # آنفالو
+            follow.delete()
+            return Response({
+                "success": True,
+                "action": "unfollowed",
+                "message": f"شما {target_user.username} را آنفالو کردید"
+            }, status=status.HTTP_200_OK)
+        else:
+            # فالو
+            follow = Follow.objects.create(
+                follower=request.user,
+                following=target_user
+            )
+            return Response({
+                "success": True,
+                "action": "followed",
+                "message": f"شما اکنون {target_user.username} را فالو می‌کنید"
+            }, status=status.HTTP_201_CREATED)
+
+
+# ========== تعداد فالوور و فالوینگ ==========
+
+class FollowCountView(APIView, BlockedUsersMixin):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        
+        # حذف بلاک شده‌ها از آمار 🚫
+        blocked_ids = self.get_mutually_blocked_ids(request.user)
+        
+        followers_count = Follow.objects.filter(
+            following=user
+        ).exclude(
+            follower_id__in=blocked_ids
+        ).count()
+        
+        following_count = Follow.objects.filter(
+            follower=user
+        ).exclude(
+            following_id__in=blocked_ids
+        ).count()
+        
+        return Response({
+            "success": True,
+            "data": {
+                "followers_count": followers_count,
+                "following_count": following_count
+            }
+        }, status=status.HTTP_200_OK)

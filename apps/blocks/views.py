@@ -19,6 +19,7 @@ User = get_user_model()
 
 
 class BlockViewSet(viewsets.ModelViewSet):
+
     permission_classes = [IsAuthenticated]
     http_method_names = ['get', 'post', 'delete', 'head', 'options']
     
@@ -218,6 +219,7 @@ class BlockViewSet(viewsets.ModelViewSet):
             blocked=request.user
         ).exists()
         
+
         return Response({
             'user_id': user.id,
             'username': user.username,
@@ -227,8 +229,9 @@ class BlockViewSet(viewsets.ModelViewSet):
         })
 
 
+
 class BlockedUsersMixin:
-    
+    # who one user bloced this user
     def get_blocked_user_ids(self, user):
         return list(
             Block.objects.filter(blocker=user)
