@@ -102,6 +102,9 @@ class SavedPostSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at', 'saved_at']
 
 
+
+
+
 class SavePostResponseSerializer(serializers.Serializer):
     success = serializers.BooleanField()
     action = serializers.CharField() 

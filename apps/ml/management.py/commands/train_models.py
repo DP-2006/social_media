@@ -23,7 +23,6 @@ class Command(BaseCommand):
         if model_type:
             self.train_model(model_type)
         else:
-            # آموزش همه مدل‌ها
             self.train_all_models()
     
     def train_model(self, model_type):
@@ -41,7 +40,6 @@ class Command(BaseCommand):
             
             duration = time.time() - start_time
             
-            # ذخیره رکورد مدل در دیتابیس
             MLModelRegistry.objects.create(
                 name=f"{model_type}_model",
                 model_type=model_type,
@@ -55,14 +53,13 @@ class Command(BaseCommand):
                 metadata=result.get('metadata', {})
             )
             
-            # غیرفعال کردن نسخه‌های قبلی
             MLModelRegistry.objects.filter(
                 model_type=model_type,
                 status='active'
             ).exclude(id=MLModelRegistry.objects.latest('id').id).update(status='deprecated')
             
             self.stdout.write(self.style.SUCCESS(
-                f"✅ مدل {model_type} با موفقیت آموزش داده شد (نسخه {result['version']})"
+                f" مدل {model_type} با موفقیت آموزش داده شد (نسخه {result['version']})"
             ))
             
         except Exception as e:
@@ -70,17 +67,12 @@ class Command(BaseCommand):
     
     def train_recommendation_model(self):
         """آموزش مدل پیشنهاد محتوا"""
-        # پیاده‌سازی آموزش واقعی
         from lightfm import LightFM
         import numpy as np
         
-        # اینجا باید داده‌ها از دیتابیس جمع‌آوری بشه
         model = LightFM(loss='warp')
         
-        # آموزش با داده‌های نمونه (در عمل باید واقعی باشه)
-        # model.fit(...)
         
-        # ذخیره مدل
         version = timezone.now().strftime("v%Y%m%d_%H%M%S")
         model_path = Path(settings.ML_MODELS_DIR) / f"recommendation_{version}.pkl"
         model_path.parent.mkdir(parents=True, exist_ok=True)

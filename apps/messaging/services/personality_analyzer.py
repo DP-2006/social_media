@@ -16,15 +16,13 @@ logger = logging.getLogger(__name__)
 
 
 class OllamaClient:
-    """کلاینت اتصال به Ollama"""
     
     def __init__(self):
         self.base_url = getattr(settings, 'OLLAMA_BASE_URL', 'http://localhost:11434')
         self.model = getattr(settings, 'OLLAMA_MODEL', 'gemma3:27b')
-        self.enabled = getattr(settings, 'OLLAMA_ENABLED', False)  # 🟢 پیش‌فرض False
+        self.enabled = getattr(settings, 'OLLAMA_ENABLED', False)  
     
     def is_available(self):
-        """بررسی در دسترس بودن Ollama"""
         if not self.enabled:
             return False
         
@@ -36,7 +34,6 @@ class OllamaClient:
             return False
     
     def generate(self, prompt, temperature=0.7, max_tokens=500):
-        """ارسال درخواست به Ollama"""
         if not self.is_available():
             return {"success": False, "error": "Ollama در دسترس نیست"}
         
@@ -68,9 +65,6 @@ class OllamaClient:
 
 
 class TargetPersonalityAnalyzer:
-    """
-    تحلیل شخصیت فرد مقابل (قابلیت مخ زنی)
-    """
     
     def __init__(self, target_user):
         self.target = target_user
@@ -82,7 +76,6 @@ class TargetPersonalityAnalyzer:
         return self._ollama_client
     
     def analyze_target(self, force_refresh=False):
-        """تحلیل کامل فرد مقابل"""
         cache_key = f"target_analysis_{self.target.id}"
         
         if not force_refresh:
@@ -92,18 +85,16 @@ class TargetPersonalityAnalyzer:
         
         data = self._collect_data()
         
-        # 🟢 اگر Ollama فعال باشد، از AI استفاده کن
         ollama = self._get_ollama_client()
         if ollama.is_available():
             analysis = self._ai_analysis(data)
         else:
-            analysis = self._static_analysis(data)  # پاسخ استاتیک
+            analysis = self._static_analysis(data) 
         
         cache.set(cache_key, analysis, 60 * 60 * 6)
         return analysis
     
     def _collect_data(self):
-        """جمع‌آوری داده‌های کاربر"""
         posts = Post.objects.filter(user=self.target, is_deleted=False)
         
         hashtags = PostHashtag.objects.filter(
@@ -173,7 +164,6 @@ class TargetPersonalityAnalyzer:
         return self._static_analysis(data)
     
     def _static_analysis(self, data):
-        """تحلیل استاتیک (بدون AI) - همیشه کار می‌کند"""
         interests = data.get('top_hashtags', [])[:3]
         
         return {
@@ -188,9 +178,6 @@ class TargetPersonalityAnalyzer:
 
 
 class MessageSuggestionService:
-    """
-    سرویس پیشنهاد پیام (مخ زنی)
-    """
     
     def __init__(self, user, target_user):
         self.user = user
@@ -203,14 +190,12 @@ class MessageSuggestionService:
         analysis = self.analyzer.analyze_target()
         ollama = self.analyzer._get_ollama_client()
         
-        # 🟢 اگر Ollama فعال باشد، پیام‌های هوشمند بده
         if ollama.is_available():
             return self._ai_message_suggestions(analysis, count)
         
         return self._static_message_suggestions(analysis, count)
     
     def _ai_message_suggestions(self, analysis, count):
-        """پیشنهاد پیام با AI"""
         ollama = self.analyzer._get_ollama_client()
         
         prompt = f"""
@@ -235,7 +220,6 @@ class MessageSuggestionService:
         return self._static_message_suggestions(analysis, count)
     
     def _static_message_suggestions(self, analysis, count):
-        """پیشنهاد پیام استاتیک (بدون AI)"""
         interests = analysis.get('interests', [])
         
         suggestions = [
@@ -267,7 +251,6 @@ class MessageSuggestionService:
             except:
                 pass
         
-        # پاسخ استاتیک
         static_replies = [
             "چه جالب! بگو بیشتر برام 😊",
             "آره دقیقاً! منم همینطور فکر می‌کنم 🤝",

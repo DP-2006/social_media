@@ -271,32 +271,21 @@ from django.utils import timezone
 from apps.posts.models import Post, Like, Comment
 from apps.hashtags.models import PostHashtag
 from apps.follows.models import Follow
-from apps.saves.models import SavedPost  # <-- اگر مدل save دارید
+from apps.saves.models import SavedPost  
 
 logger = logging.getLogger(__name__)
 
 
 class ExploreFeedService:
-    """
-    سرویس اکسپلور فید با الگوریتم پیشرفته
-    ویژگی‌ها:
-    - پشتیبانی از AI (Ollama)
-    - N+1 Query حل شده
-    - فاکتور تازگی (نیمه‌عمر)
-    - جریمه تنوع (ضد تکرار)
-    - کش چندلایه
-    """
     
-    # وزن‌های قابل تنظیم (از settings بخوانید)
     WEIGHTS = {
         'likes': 1.0,
         'comments': 2.0,
-        'saves': 5.0,      # اگر مدل save دارید
-        'recency': 0.25,    # وزن تازگی در امتیاز نهایی
+        'saves': 5.0,      
+        'recency': 0.25,   
         'hashtag_match': 3.0,
     }
     
-    # نیمه‌عمر برای تازگی (ساعت)
     RECENCY_HALF_LIFE = 48
     
     def __init__(self, user):
@@ -316,7 +305,6 @@ class ExploreFeedService:
         return self._ollama_client
     
     def _get_following_ids(self):
-        """کش کردن لیست فالو شده‌ها"""
         if self._cached_following is None:
             self._cached_following = set(
                 Follow.objects.filter(
@@ -338,26 +326,21 @@ class ExploreFeedService:
         return self._cached_blocked
     
     def get_explore_feed(self, limit=20, offset=0, use_ollama=True):
-        """نسخه نهایی و بهینه شده اکسپلور"""
         
         cache_key = f"explore_feed_v2_{self.user.id}_{offset}_{limit}_{use_ollama}"
         cached = cache.get(cache_key)
         if cached:
             return cached
         
-        # 1. دریافت هشتگ‌های مورد علاقه
         favorite_hashtags = self._get_favorite_hashtags(use_ollama)
         
-        # 2. دریافت پست‌های کاندید (با یک کوئری بهینه)
         if not favorite_hashtags:
             posts = self._get_trending_posts(limit * 3)
         else:
             posts = self._get_posts_by_hashtags_optimized(favorite_hashtags, limit * 3)
         
-        # 3. رتبه‌بندی با الگوریتم کامل
         ranked_posts = self._rank_posts_advanced(posts, favorite_hashtags)
         
-        # 4. صفحه‌بندی
         result_posts = ranked_posts[offset:offset + limit]
         
         output = {
@@ -370,15 +353,12 @@ class ExploreFeedService:
             'has_next': offset + limit < len(ranked_posts)
         }
         
-        # کش 5 دقیقه‌ای
         cache.set(cache_key, output, 60 * 5)
         
         return output
     
     def _get_favorite_hashtags(self, use_ollama=False):
-        """بهینه شده با یک کوئری واحد"""
         
-        # یک کوئری برای همه تعاملات کاربر
         user_interactions = PostHashtag.objects.filter(
             Q(post__likes__user=self.user) |
             Q(post__comments__user=self.user) |
@@ -387,17 +367,14 @@ class ExploreFeedService:
         
         hashtag_counter = Counter(user_interactions)
         
-        # حذف هشتگ‌های بی‌ربط (کمتر از 2 بار تکرار)
         top_hashtags = [
             h for h, count in hashtag_counter.most_common(15)
             if count >= 2
         ]
         
-        # تقویت با AI
         if use_ollama and top_hashtags:
             ai_hashtags = self._enhance_with_ollama(top_hashtags[:5])
             if ai_hashtags:
-                # ترکیب و حذف تکراری‌ها
                 all_hashtags = list(dict.fromkeys(top_hashtags + ai_hashtags))
                 top_hashtags = all_hashtags[:15]
         
@@ -420,15 +397,13 @@ Example: nature, travel, photography, adventure"""
                 prompt, 
                 temperature=0.5, 
                 max_tokens=100,
-                timeout=10  # timeout 10 ثانیه
+                timeout=10  
             )
             
             if result.get('success'):
                 response = result.get('response', '')
-                # پشتیبانی از حروف فارسی و انگلیسی
                 import re
                 hashtags = re.findall(r'[a-zA-Z0-9_\u0600-\u06FF]+', response)
-                # حذف هشتگ‌های تکراری و خیلی کوتاه
                 unique_tags = list(dict.fromkeys([h.lower() for h in hashtags if len(h) > 2]))
                 return unique_tags[:5]
             
@@ -439,21 +414,16 @@ Example: nature, travel, photography, adventure"""
             return []
     
     def _get_posts_by_hashtags_optimized(self, hashtags, limit):
-        """
-        ✅ حل مشکل N+1 Query
-        یک کوئری با تمام prefetch های لازم
-        """
         if not hashtags:
             return Post.objects.none()
         
         following_ids = self._get_following_ids()
         blocked_ids = self._get_blocked_ids()
         
-        # یک کوئری واحد با همه چیز
         posts = Post.objects.filter(
             post_hashtags__hashtag__name__in=hashtags,
             is_deleted=False,
-            created_at__gte=timezone.now() - timedelta(days=30)  # حداکثر 30 روز
+            created_at__gte=timezone.now() - timedelta(days=30)  
         ).exclude(
             user=self.user
         ).exclude(
@@ -463,19 +433,18 @@ Example: nature, travel, photography, adventure"""
         ).select_related(
             'user', 'user__profile'
         ).prefetch_related(
-            'likes',  # برای count لایک
-            'comments',  # برای count کامنت
-            'post_hashtags__hashtag',  # 🔥 کلید حل N+1
+            'likes', 
+            'comments', 
+            'post_hashtags__hashtag',
         ).annotate(
             likes_count=Count('likes', distinct=True),
             comments_count=Count('comments', distinct=True),
-            saves_count=Count('saved_by_users', distinct=True),  # اگر مدل save دارید
+            saves_count=Count('saved_by_users', distinct=True), 
         ).distinct()
         
         return posts[:limit]
     
     def _get_trending_posts(self, limit):
-        """پست‌های ترند 7 روز اخیر"""
         following_ids = self._get_following_ids()
         blocked_ids = self._get_blocked_ids()
         
@@ -500,83 +469,62 @@ Example: nature, travel, photography, adventure"""
         ).order_by('-total_engagement', '-created_at')[:limit]
     
     def _calculate_recency_score(self, post):
-        """
-        محاسبه امتیاز تازگی با تابع نیمه‌عمر
-        پست‌های جدیدتر امتیاز بالاتر
-        """
         now = timezone.now()
         age_hours = (now - post.created_at).total_seconds() / 3600
         
-        # تابع نیمه‌عمر: score = 2^(-age / half_life)
         score = math.pow(2, -age_hours / self.RECENCY_HALF_LIFE)
         
-        # پست‌های کمتر از 2 ساعت: امتیاز کامل
         if age_hours < 2:
             return 1.0
         
-        return max(0.05, score)  # حداقل 0.05
+        return max(0.05, score)  
     
     def _calculate_diversity_penalty(self, post, recent_user_ids):
-        """
-        جریمه تنوع: اگر از یک کاربر زیاد پست دیدیم، امتیاز کم می‌شود
-        """
         if post.user_id not in recent_user_ids:
-            return 1.0  # بدون جریمه
+            return 1.0  
         
         count = recent_user_ids.get(post.user_id, 0)
         
         if count == 1:
-            return 0.7  # 30% جریمه
+            return 0.7  
         elif count == 2:
-            return 0.4  # 60% جریمه
+            return 0.4  
         else:
-            return 0.1  # 90% جریمه
+            return 0.1  
     
     def _rank_posts_advanced(self, posts, target_hashtags):
-        """
-        رتبه‌بندی پیشرفته با تمام فاکتورها
-        """
         target_set = set(target_hashtags)
         scored = []
         
-        # برای جریمه تنوع
         recent_users = Counter()
         
         for post in posts:
-            # 1. امتیاز تعاملات (مقیاس لگاریتمی و نرمال)
             likes_score = math.log2(post.likes_count + 1) * 0.5
             comments_score = math.log2(post.comments_count + 1) * 1.0
             saves_score = math.log2(getattr(post, 'saves_count', 0) + 1) * 2.5
             
             engagement_score = min(1.0, (likes_score + comments_score + saves_score) / 10)
             
-            # 2. امتیاز هشتگ (بهینه شده بدون کوئری اضافی)
             post_hashtags = set(
                 post.post_hashtags.values_list('hashtag__name', flat=True)
             )
             common_count = len(target_set & post_hashtags)
-            hashtag_score = min(1.0, common_count / 5)  # حداکثر 5 هشتگ مشابه
+            hashtag_score = min(1.0, common_count / 5)  
             
-            # 3. امتیاز تازگی
             recency_score = self._calculate_recency_score(post)
             
-            # 4. جریمه تنوع
             diversity_penalty = self._calculate_diversity_penalty(post, recent_users)
             
-            # 5. امتیاز نهایی
             final_score = (
-                engagement_score * 0.40 +      # 40% تعامل
-                hashtag_score * 0.30 +          # 30% هشتگ
-                recency_score * 0.30            # 30% تازگی
+                engagement_score * 0.40 +     
+                hashtag_score * 0.30 +          
+                recency_score * 0.30          
             ) * diversity_penalty
             
-            # ذخیره برای جریمه تنوع پست‌های بعدی
             recent_users[post.user_id] += 1
             if len(recent_users) > 20:
-                # حذف قدیمی‌ترین‌ها (ساده‌سازی)
                 pass
             
-            # دلایل نمایش
             reasons = self._get_display_reasons_advanced(
                 post, common_count, target_set,
                 likes_score, comments_score, recency_score
@@ -584,7 +532,7 @@ Example: nature, travel, photography, adventure"""
             
             scored.append({
                 'post': post,
-                'score': round(final_score * 100, 2),  # مقیاس 0-100
+                'score': round(final_score * 100, 2),  
                 'reasons': reasons,
                 'metrics': {
                     'likes': post.likes_count,
@@ -595,17 +543,14 @@ Example: nature, travel, photography, adventure"""
                 }
             })
         
-        # مرتب‌سازی نهایی
         scored.sort(key=lambda x: x['score'], reverse=True)
         
         return scored
     
     def _get_display_reasons_advanced(self, post, common_count, target_set, 
                                        likes_score, comments_score, recency_score):
-        """دلایل نمایش به کاربر"""
         reasons = []
         
-        # اولویت: هشتگ مشترک
         if common_count > 0:
             post_hashtags = set(
                 post.post_hashtags.values_list('hashtag__name', flat=True)
@@ -614,14 +559,12 @@ Example: nature, travel, photography, adventure"""
             for tag in common:
                 reasons.append(f"#{tag}")
         
-        # تعامل بالا
         if likes_score > 3:
             reasons.append(f"{post.likes_count} لایک")
         
         if comments_score > 2:
             reasons.append(f"{post.comments_count} کامنت")
         
-        # پست جدید
         if recency_score > 0.8:
             reasons.append("جدید")
         elif recency_score > 0.5:
@@ -629,16 +572,12 @@ Example: nature, travel, photography, adventure"""
             if hours_ago < 24:
                 reasons.append(f"{int(hours_ago)} ساعت پیش")
         
-        # پیشنهاد هوش مصنوعی
         if not reasons:
             reasons.append("پیشنهاد هوشمند")
         
         return reasons[:3]
     
     def get_explore_metadata(self):
-        """
-        متادیتای اکسپلور برای نمایش در داشبورد
-        """
         following_count = len(self._get_following_ids())
         
         return {

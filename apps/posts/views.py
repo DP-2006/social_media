@@ -14,7 +14,6 @@ from core.pagination import StandardPagination
 from apps.blocks.views import BlockedUsersMixin 
 
 
-# ========== ویوهای پست ==========
 
 class PostListCreateView(generics.ListCreateAPIView):
     serializer_class = PostSerializer
@@ -40,7 +39,6 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
         instance.save()
 
 
-# ========== ویوهای لایک ==========
 
 class LikeToggleView(APIView):
     permission_classes = [IsAuthenticated]
@@ -66,7 +64,6 @@ class LikeToggleView(APIView):
             }, status=status.HTTP_201_CREATED)
 
 
-# ========== ویوهای کامنت ==========
 
 class CommentListCreateView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
@@ -103,13 +100,8 @@ class CommentDeleteView(APIView):
         return Response({"success": True, "message": "کامنت حذف شد"})
 
 
-# ========== ویوهای ذخیره پست (Saved Posts) ==========
 
 class SavePostView(APIView):
-    """
-    ذخیره یا حذف پست از Saved
-    POST /api/posts/{post_id}/save/
-    """
     permission_classes = [IsAuthenticated]
     
     def post(self, request, post_id):
@@ -140,13 +132,9 @@ class SavePostView(APIView):
 
 
 class SavedPostsListView(generics.ListAPIView):
-    """
-    لیست پست‌های ذخیره شده کاربر
-    GET /api/posts/saved/?page=1&page_size=20
-    """
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
-    pagination_class = StandardPagination  # ✅ حالا باید کار کند
+    pagination_class = StandardPagination  
     
     def get_queryset(self):
         return Post.objects.filter(
@@ -177,10 +165,6 @@ class SavedPostsListView(generics.ListAPIView):
 
 
 class CheckSavedStatusView(APIView):
-    """
-    بررسی وضعیت ذخیره شدن پست
-    GET /api/posts/{post_id}/saved-status/
-    """
     permission_classes = [IsAuthenticated]
     
     def get(self, request, post_id):

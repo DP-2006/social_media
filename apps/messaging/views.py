@@ -15,7 +15,6 @@ from .serializers import ConversationSerializer, MessageSerializer
 from core.pagination import MessagesPagination
 from apps.blocks.views import BlockedUsersMixin
 
-# ✅ اضافه کردن ایمپورت‌های چت گروهی
 from .models import GroupConversation, GroupMessage, GroupMember
 from .serializers import (
     GroupConversationSerializer, GroupMessageSerializer,
