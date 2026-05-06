@@ -9,7 +9,6 @@ from django.conf import settings
 from django.core.cache import cache
 
 class OllamaClient:
-    """کلاینت اتصال به Ollama برای تولید محتوای هوشمند"""
     
     # FIX THIS LINE - remove hardcoded default
     def __init__(self, model_name=None):  # Changed from model_name='qwen:7b'
@@ -92,7 +91,6 @@ class OllamaClient:
             return {'success': False, 'error': str(e)}
     
     def analyze_personality_with_ai(self, user_data):
-        """تحلیل شخصیت با استفاده از AI (ترکیب با داده‌های آماری)"""
         
         prompt = f"""
         شما یک روانشناس متخصص هستید. بر اساس اطلاعات زیر، یک تحلیل شخصیت کامل ارائه دهید:

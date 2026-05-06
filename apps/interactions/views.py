@@ -12,9 +12,7 @@ from .services.explore_feed import ExploreFeedService
 
 
 class ExploreFeedView(APIView):
-    """
-    GET /api/interactions/explore/?limit=20&offset=0&use_ollama=true
-    """
+    #GET /api/interactions/explore/?limit=20&offset=0&use_ollama=true
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):

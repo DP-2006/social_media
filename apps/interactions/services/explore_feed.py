@@ -257,7 +257,7 @@
 
 
 
-# apps/interactions/services/explore_feed.py (نسخه نهایی)
+# apps/interactions/services/explore_feed.py 
 
 import logging
 import math

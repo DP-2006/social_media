@@ -3,12 +3,7 @@
 from rest_framework import serializers
 from .models import MLModelRegistry, TrainingData, PredictionCache, UserEmbedding
 
-# ============================================================
-# سریالایزرهای مدل‌های دیتابیس
-# ============================================================
-
 class MLModelRegistrySerializer(serializers.ModelSerializer):
-    """سریالایزر برای ثبت و نمایش مدل‌های ML"""
     
     class Meta:
         model = MLModelRegistry
@@ -22,7 +17,6 @@ class MLModelRegistrySerializer(serializers.ModelSerializer):
 
 
 class TrainingDataSerializer(serializers.ModelSerializer):
-    """سریالایزر برای داده‌های آموزش"""
     
     class Meta:
         model = TrainingData
@@ -34,7 +28,6 @@ class TrainingDataSerializer(serializers.ModelSerializer):
 
 
 class PredictionCacheSerializer(serializers.ModelSerializer):
-    """سریالایزر برای کش پیش‌بینی‌ها"""
     
     class Meta:
         model = PredictionCache
@@ -47,7 +40,6 @@ class PredictionCacheSerializer(serializers.ModelSerializer):
 
 
 class UserEmbeddingSerializer(serializers.ModelSerializer):
-    """سریالایزر برای بردار ویژگی‌های کاربر"""
     
     class Meta:
         model = UserEmbedding
@@ -58,9 +50,6 @@ class UserEmbeddingSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at', 'updated_at']
 
 
-# ============================================================
-# سریالایزرهای درخواست/پاسخ API
-# ============================================================
 
 class ContentModerationRequestSerializer(serializers.Serializer):
     """سریالایزر درخواست تعدیل محتوا"""
@@ -110,7 +99,6 @@ class ContentModerationResponseSerializer(serializers.Serializer):
 
 
 class PersonalizedFeedResponseSerializer(serializers.Serializer):
-    """سریالایزر پاسخ فید شخصی‌سازی شده"""
     posts = serializers.ListField(
         help_text="لیست پست‌های پیشنهادی"
     )
@@ -120,7 +108,6 @@ class PersonalizedFeedResponseSerializer(serializers.Serializer):
 
 
 class TrainModelRequestSerializer(serializers.Serializer):
-    """سریالایزر درخواست آموزش مدل"""
     model_type = serializers.ChoiceField(
         choices=['recommendation', 'moderation', 'sentiment', 'trending', 'all'],
         default='all',
@@ -143,13 +130,11 @@ class TrainModelRequestSerializer(serializers.Serializer):
 
 
 class TrainModelResponseSerializer(serializers.Serializer):
-    """سریالایزر پاسخ آموزش مدل"""
     message = serializers.CharField()
     result = serializers.DictField()
 
 
 class ModelStatusSerializer(serializers.Serializer):
-    """سریالایزر وضعیت یک مدل"""
     type = serializers.CharField(help_text="نوع مدل")
     version = serializers.CharField(help_text="نسخه مدل")
     status = serializers.CharField(help_text="وضعیت مدل")
@@ -159,13 +144,12 @@ class ModelStatusSerializer(serializers.Serializer):
 
 
 class ModelHealthResponseSerializer(serializers.Serializer):
-    """سریالایزر پاسخ سلامت مدل‌ها"""
     models = ModelStatusSerializer(many=True)
     total_models = serializers.IntegerField()
 
 
 class ModelPredictionRequestSerializer(serializers.Serializer):
-    """سریالایزر درخواست پیش‌بینی عمومی"""
+    
     model_type = serializers.ChoiceField(
         choices=['recommendation', 'moderation', 'sentiment', 'trending'],
         required=True,
@@ -182,7 +166,6 @@ class ModelPredictionRequestSerializer(serializers.Serializer):
 
 
 class ModelPredictionResponseSerializer(serializers.Serializer):
-    """سریالایزر پاسخ پیش‌بینی عمومی"""
     prediction = serializers.JSONField(help_text="نتیجه پیش‌بینی")
     confidence = serializers.FloatField(help_text="میزان اطمینان")
     model_version = serializers.CharField(help_text="نسخه مدل استفاده شده")
@@ -190,32 +173,21 @@ class ModelPredictionResponseSerializer(serializers.Serializer):
     from_cache = serializers.BooleanField(help_text="آیا از کش برگشته است؟")
 
 
-# ============================================================
-# سریالایزرهای خطا
-# ============================================================
 
 class ErrorResponseSerializer(serializers.Serializer):
-    """سریالایزر پاسخ خطا"""
     error = serializers.CharField()
     detail = serializers.CharField(required=False)
     code = serializers.IntegerField(required=False)
 
 
 class ValidationErrorResponseSerializer(serializers.Serializer):
-    """سریالایزر پاسخ خطای اعتبارسنجی"""
     error = serializers.CharField()
     field_errors = serializers.DictField(
         child=serializers.ListField(child=serializers.CharField()),
         required=False
     )
 
-
-# ============================================================
-# سریالایزرهای آموزشی و ارزیابی
-# ============================================================
-
 class EvaluationMetricsSerializer(serializers.Serializer):
-    """سریالایزر معیارهای ارزیابی مدل"""
     accuracy = serializers.FloatField(required=False)
     precision = serializers.FloatField(required=False)
     recall = serializers.FloatField(required=False)
@@ -229,7 +201,6 @@ class EvaluationMetricsSerializer(serializers.Serializer):
 
 
 class TrainingHistorySerializer(serializers.Serializer):
-    """سریالایزر تاریخچه آموزش"""
     epoch = serializers.IntegerField()
     train_loss = serializers.FloatField()
     val_loss = serializers.FloatField()
@@ -240,7 +211,6 @@ class TrainingHistorySerializer(serializers.Serializer):
 
 
 class BatchPredictionRequestSerializer(serializers.Serializer):
-    """سریالایزر درخواست پیش‌بینی دسته‌ای"""
     model_type = serializers.ChoiceField(
         choices=['recommendation', 'moderation', 'sentiment', 'trending'],
         required=True
@@ -255,7 +225,6 @@ class BatchPredictionRequestSerializer(serializers.Serializer):
 
 
 class BatchPredictionResponseSerializer(serializers.Serializer):
-    """سریالایزر پاسخ پیش‌بینی دسته‌ای"""
     results = serializers.ListField(
         child=ModelPredictionResponseSerializer()
     )

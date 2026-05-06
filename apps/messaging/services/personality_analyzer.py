@@ -126,7 +126,6 @@ class TargetPersonalityAnalyzer:
         }
     
     def _ai_analysis(self, data):
-        """تحلیل با Ollama (هوشمند)"""
         ollama = self._get_ollama_client()
         
         prompt = f"""

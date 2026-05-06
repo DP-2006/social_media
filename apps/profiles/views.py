@@ -27,7 +27,6 @@ class ProfileView(APIView):
         serializer = ProfileUpdateSerializer(
             profile, 
             data=request.data,
-            #partial=False
         )
         
         if serializer.is_valid():

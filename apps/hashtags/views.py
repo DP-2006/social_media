@@ -11,10 +11,9 @@ from django.db.models import Q
 from .models import Hashtag, PostHashtag
 from .serializers import HashtagSerializer, TrendingHashtagSerializer
 from core.pagination import StandardPagination
-
+from django.db import models
 
 class HashtagViewSet(viewsets.ModelViewSet):
-    """مدیریت هشتگ‌ها"""
     serializer_class = HashtagSerializer
     permission_classes = [AllowAny]
     pagination_class = StandardPagination
@@ -28,14 +27,12 @@ class HashtagViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def trending(self, request):
-        """هشتگ‌های trending"""
         hashtags = Hashtag.objects.order_by('-usage_count')[:20]
         serializer = TrendingHashtagSerializer(hashtags, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'])
     def posts(self, request, name=None):
-        """پست‌های یک هشتگ"""
         hashtag = self.get_object()
         post_hashtags = PostHashtag.objects.filter(hashtag=hashtag).select_related('post', 'post__user')
         
@@ -53,5 +50,3 @@ class HashtagViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-# اضافه کردن import
-from django.db import models

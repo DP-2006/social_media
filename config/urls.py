@@ -133,6 +133,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from apps.ml.views import AdminAnalyzeUserView  # اضافه کن
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 urlpatterns = [
     path('admin/analyze-user/<str:user_id>/', AdminAnalyzeUserView.as_view(), name='admin-analyze-user'),
@@ -153,7 +154,18 @@ urlpatterns = [
     path('admin/ml/analyze/<str:user_id>/', AdminAnalyzeUserView.as_view(), name='admin_analyze_old'),
     path('api/search/', include('apps.search.urls')),
 
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+
+
 ]
+
+
+
+
+
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

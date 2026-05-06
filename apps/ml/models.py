@@ -5,7 +5,6 @@ from django.conf import settings
 from core.models.base_model import BaseModel
 
 class MLModelRegistry(BaseModel):
-    """ثبت مدل‌های ML آموزش دیده"""
     MODEL_TYPES = [
         ('recommendation', 'موتور پیشنهاد'),
         ('moderation', 'تعدیل محتوا'),
@@ -52,7 +51,6 @@ class MLModelRegistry(BaseModel):
 
 
 class TrainingData(BaseModel):
-    """داده‌های آموزش مدل"""
     DATA_TYPES = [
         ('moderation', 'داده تعدیل محتوا'),
         ('interaction', 'داده تعامل کاربر'),
@@ -77,18 +75,15 @@ class TrainingData(BaseModel):
 
 
 class PredictionCache(BaseModel):
-    """کش پیش‌بینی‌ها برای کاهش محاسبات"""
     cache_key = models.CharField(max_length=255, unique=True, db_index=True)
     model_type = models.CharField(max_length=50)
     input_hash = models.CharField(max_length=64)
     prediction_result = models.JSONField()
     confidence = models.FloatField()
     
-    # فیلدهای زمانی
-    expires_at = models.DateTimeField(null=True, blank=True)  # ← اضافه شد
+    expires_at = models.DateTimeField(null=True, blank=True)  
     created_at = models.DateTimeField(auto_now_add=True)
     
-    # آمار استفاده
     hit_count = models.IntegerField(default=0)
     last_accessed = models.DateTimeField(auto_now=True)
     
@@ -96,7 +91,7 @@ class PredictionCache(BaseModel):
         indexes = [
             models.Index(fields=['cache_key']),
             models.Index(fields=['model_type', '-hit_count']),
-            models.Index(fields=['expires_at']),  # میتوانید این index را هم اضافه کنید
+            models.Index(fields=['expires_at']), 
         ]
     
     def __str__(self):
@@ -104,7 +99,6 @@ class PredictionCache(BaseModel):
 
 
 class UserEmbedding(BaseModel):
-    """بردار ویژگی‌های کاربر برای مدل‌های پیشنهاد"""
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

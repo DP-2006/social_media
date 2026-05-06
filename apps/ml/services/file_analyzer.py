@@ -27,7 +27,6 @@ except ImportError:
 
 
 class FileContentAnalyzer:
-    """تحلیل محتوای فایل‌ها"""
     
     @staticmethod
     def extract_text_from_pdf(file_path):

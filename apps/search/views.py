@@ -17,7 +17,6 @@ from .serializers import (
 
 
 def get_search_service(request_user=None):
-    """دریافت سرویس جستجو بر اساس تنظیمات"""
     use_ollama = getattr(settings, 'SEARCH_USE_OLLAMA', True)
     
     if use_ollama:
@@ -27,7 +26,6 @@ def get_search_service(request_user=None):
 
 
 class GlobalSearchView(APIView):
-    """جستجوی جهانی"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -64,7 +62,6 @@ class GlobalSearchView(APIView):
 
 
 class SearchByUsernameView(APIView):
-    """جستجوی دقیق کاربر با username"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request, username=None):
@@ -98,7 +95,6 @@ class SearchByUsernameView(APIView):
 
 
 class SearchUsersView(APIView):
-    """جستجوی کاربران (لیستی)"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -131,7 +127,6 @@ class SearchUsersView(APIView):
 
 
 class SearchPostsView(APIView):
-    """جستجوی پست‌ها"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -169,7 +164,6 @@ class SearchPostsView(APIView):
 
 
 class SearchHashtagsView(APIView):
-    """جستجوی هشتگ‌ها"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -196,7 +190,6 @@ class SearchHashtagsView(APIView):
 
 
 class SearchSuggestionsView(APIView):
-    """پیشنهادات لحظه‌ای جستجو (autocomplete)"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):
@@ -227,7 +220,6 @@ class SearchSuggestionsView(APIView):
 
 
 class SearchConfigView(APIView):
-    """دریافت تنظیمات جستجو"""
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request):

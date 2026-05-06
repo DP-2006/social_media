@@ -14,7 +14,6 @@ from apps.blocks.views import BlockedUsersMixin
 User = get_user_model()
 
 
-# ========== لیست فالوورها با در نظر گرفتن بلاک ==========
 
 class FollowersListView(APIView, BlockedUsersMixin):
     permission_classes = [IsAuthenticated]
@@ -26,7 +25,6 @@ class FollowersListView(APIView, BlockedUsersMixin):
             following=user
         ).select_related('follower', 'follower__profile')
         
-        # حذف کاربران بلاک شده 🚫
         blocked_ids = self.get_mutually_blocked_ids(request.user)
         follows = follows.exclude(follower_id__in=blocked_ids)
         follows = follows.order_by('-created_at')
@@ -50,7 +48,6 @@ class FollowersListView(APIView, BlockedUsersMixin):
         }, status=status.HTTP_200_OK)
 
 
-# ========== لیست افرادی که کاربر فالو کرده ==========
 
 class FollowingListView(generics.ListAPIView, BlockedUsersMixin):
     permission_classes = [IsAuthenticated]
@@ -64,14 +61,12 @@ class FollowingListView(generics.ListAPIView, BlockedUsersMixin):
             follower_id=user_id
         ).only('id', 'created_at', 'following__id', 'following__username', 'following__email')
         
-        # حذف کاربران بلاک شده 🚫
         blocked_ids = self.get_mutually_blocked_ids(self.request.user)
         follows = follows.exclude(following_id__in=blocked_ids)
         
         return follows
 
 
-# ========== فالو کردن کاربر (ساده) ==========
 
 class FollowUserView(APIView, BlockedUsersMixin):
     permission_classes = [IsAuthenticated]
@@ -80,14 +75,12 @@ class FollowUserView(APIView, BlockedUsersMixin):
         follower = request.user
         following = get_object_or_404(User, id=user_id)
         
-        # بررسی فالو کردن خود
         if follower.id == following.id:
             return Response(
                 {'error': 'نمی‌توانید خودتان را فالو کنید!'}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # بررسی بلاک بودن 🚫
         blocked_ids = self.get_mutually_blocked_ids(request.user)
         if following.id in blocked_ids:
             return Response({
@@ -112,7 +105,6 @@ class FollowUserView(APIView, BlockedUsersMixin):
         )
 
 
-# ========== آنفالو کردن کاربر (ساده) ==========
 
 class UnfollowUserView(APIView, BlockedUsersMixin):
     permission_classes = [IsAuthenticated]
@@ -135,7 +127,6 @@ class UnfollowUserView(APIView, BlockedUsersMixin):
         )
 
 
-# ========== فالو/آنفالو (یک API برای هر دو) ==========
 
 class FollowToggleView(APIView, BlockedUsersMixin):
     permission_classes = [IsAuthenticated]
@@ -143,14 +134,12 @@ class FollowToggleView(APIView, BlockedUsersMixin):
     def post(self, request, user_id):
         target_user = get_object_or_404(User, id=user_id)
         
-        # بررسی فالو کردن خود
         if request.user == target_user:
             return Response({
                 "success": False,
                 "error": "نمی‌توانید خودتان را فالو کنید"
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # بررسی بلاک بودن 🚫
         blocked_ids = self.get_mutually_blocked_ids(request.user)
         if target_user.id in blocked_ids:
             return Response({
@@ -158,14 +147,12 @@ class FollowToggleView(APIView, BlockedUsersMixin):
                 "error": "نمی‌توانید این کاربر را فالو کنید (بلاک شده)"
             }, status=status.HTTP_403_FORBIDDEN)
         
-        # بررسی وجود فالو
         follow = Follow.objects.filter(
             follower=request.user,
             following=target_user
         ).first()
         
         if follow:
-            # آنفالو
             follow.delete()
             return Response({
                 "success": True,
@@ -173,7 +160,6 @@ class FollowToggleView(APIView, BlockedUsersMixin):
                 "message": f"شما {target_user.username} را آنفالو کردید"
             }, status=status.HTTP_200_OK)
         else:
-            # فالو
             follow = Follow.objects.create(
                 follower=request.user,
                 following=target_user
@@ -185,15 +171,12 @@ class FollowToggleView(APIView, BlockedUsersMixin):
             }, status=status.HTTP_201_CREATED)
 
 
-# ========== تعداد فالوور و فالوینگ ==========
-
 class FollowCountView(APIView, BlockedUsersMixin):
     permission_classes = [IsAuthenticated]
     
     def get(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
         
-        # حذف بلاک شده‌ها از آمار 🚫
         blocked_ids = self.get_mutually_blocked_ids(request.user)
         
         followers_count = Follow.objects.filter(
