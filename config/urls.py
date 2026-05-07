@@ -61,6 +61,7 @@ urlpatterns = [
     path('ml/', include('apps.ml.urls')), 
     path('admin/ml/analyze/<str:user_id>/', AdminAnalyzeUserView.as_view(), name='admin_analyze_old'),
     path('api/search/', include('apps.search.urls')),
+    path('api/follows/', include('apps.follows.urls')),
 
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

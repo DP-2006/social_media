@@ -34,7 +34,6 @@ class OllamaSearchService(BaseSearchService):
         return self._ollama_client
     
     def search_all(self, query, limit=20, offset=0):
-        
         cache_key = f"ollama_search_{hash(query)}_{offset}_{limit}"
         cached = cache.get(cache_key)
         
@@ -105,7 +104,16 @@ class OllamaSearchService(BaseSearchService):
         
         return keywords[:5]
     
+    def search_hashtags(self, query, limit=20):
+        """جستجوی هشتگ‌ها - مستقیماً از کلاس پایه استفاده می‌کند"""
+        return super().search_hashtags(query, limit)
+    
+    def search_users(self, query, limit=20):
+        """جستجوی کاربران با قابلیت بلاک"""
+        return super().search_users(query, limit)
+    
     def search_suggestions(self, query, limit=10):
+        """پیشنهادات لحظه‌ای جستجو (autocomplete)"""
         
         if not query or len(query) < 2:
             return {'users': [], 'hashtags': []}
