@@ -121,7 +121,7 @@ DATABASES = {
 #         'NAME': 'DjangoDB',
 #         'USER': 'DjangoUser',
 #         'PASSWORD': 'Django@2024#Strong',
-#         'HOST': '192.168.1.200',
+#         'HOST': '192.168.1.2000',
 #         'PORT': '1433',
 #         'OPTIONS': {
 #             'driver': 'SQL Server Native Client 11.0',  
@@ -223,7 +223,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 OLLAMA_BASE_URL = 'http://localhost:11434'
-OLLAMA_MODEL = 'gemma3:27b'  # Fixed from 'grmma3:27b'
+OLLAMA_MODEL = 'gemma3:27b'  
 ML_FEATURES = {
     'ENABLE_RECOMMENDATION': True,
     'ENABLE_MODERATION': True,
@@ -251,12 +251,6 @@ CELERY_BROKER_TRANSPORT = 'django'
 KAVENEGAR_API_KEY = '4D706439326650596F41677543517261356B6A614142663053775846754D764D41474F424C69386E586D6B3D'
 SMS_SENDER = '2000660110'
 #SMS_PROVIDER = 'kavenegar' 
-
-
-
-
-
-
 
 SIMPLE_JWT = {
     

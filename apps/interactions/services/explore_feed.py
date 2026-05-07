@@ -315,7 +315,6 @@ class ExploreFeedService:
         return self._cached_following
     
     def _get_blocked_ids(self):
-        """کش کردن لیست بلاک شده‌ها"""
         if self._cached_blocked is None:
             from apps.blocks.models import Block
             self._cached_blocked = set(
@@ -381,7 +380,6 @@ class ExploreFeedService:
         return top_hashtags
     
     def _enhance_with_ollama(self, current_hashtags):
-        """بهبود یافته با timeout و validation"""
         ollama = self._get_ollama_client()
         if not ollama:
             return []

@@ -1,26 +1,31 @@
 # apps/posts/views.py
 
-from rest_framework import generics, permissions, status
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
 from django.shortcuts import get_object_or_404
 from django.db import transaction
-from rest_framework.parsers import MultiPartParser, FormParser
 
 from .models import Post, Comment, Like, SavedPost
-from .serializers import PostSerializer, CommentSerializer, SavedPostSerializer, SavePostResponseSerializer
-from core.pagination import StandardPagination  
-from apps.blocks.views import BlockedUsersMixin 
+from .serializers import PostSerializer, CommentSerializer
+from core.pagination import StandardPagination
 
 
 
 class PostListCreateView(generics.ListCreateAPIView):
+    # لیست پست‌ها و ساخت پست جدید
+    # GET /api/posts/
+    # POST /api/posts/
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
     
     def get_queryset(self):
+        user_id = self.request.query_params.get('user_id')
+        if user_id:
+            return Post.objects.filter(user_id=user_id, is_deleted=False).order_by('-created_at')
         return Post.objects.filter(is_deleted=False).order_by('-created_at')
     
     def perform_create(self, serializer):
@@ -28,13 +33,29 @@ class PostListCreateView(generics.ListCreateAPIView):
 
 
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
+    # GET /api/posts/{id}/
+    # PATCH /api/posts/{id}/  
+    # DELETE /api/posts/{id}/ 
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
     
     def get_queryset(self):
         return Post.objects.filter(is_deleted=False)
     
+    def perform_update(self, serializer):
+        """بررسی مالکیت قبل از ویرایش"""
+        post = self.get_object()
+        if post.user != self.request.user:
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied("شما اجازه ویرایش این پست را ندارید")
+        serializer.save()
+    
     def perform_destroy(self, instance):
+        """حذف منطقی پست (فقط صاحب پست)"""
+        if instance.user != self.request.user:
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied("شما اجازه حذف این پست را ندارید")
         instance.is_deleted = True
         instance.save()
 
@@ -100,7 +121,6 @@ class CommentDeleteView(APIView):
         return Response({"success": True, "message": "کامنت حذف شد"})
 
 
-
 class SavePostView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -118,7 +138,7 @@ class SavePostView(APIView):
                 "action": "unsaved",
                 "message": "پست از لیست ذخیره شده‌ها حذف شد",
                 "saved_count": saved_count
-            }, status=status.HTTP_200_OK)
+            })
         else:
             SavedPost.objects.create(user=request.user, post=post)
             saved_count = SavedPost.objects.filter(user=request.user).count()
@@ -134,34 +154,15 @@ class SavePostView(APIView):
 class SavedPostsListView(generics.ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
-    pagination_class = StandardPagination  
+    pagination_class = StandardPagination
     
     def get_queryset(self):
         return Post.objects.filter(
             saved_by_users__user=self.request.user,
             is_deleted=False
-        ).select_related(
-            'user', 'user__profile'
-        ).prefetch_related(
+        ).select_related('user', 'user__profile').prefetch_related(
             'likes', 'comments', 'media_files'
         ).order_by('-saved_by_users__saved_at')
-    
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        page = self.paginate_queryset(queryset)
-        
-        if page is not None:
-            serializer = self.get_serializer(page, many=True, context={'request': request})
-            return self.get_paginated_response({
-                "success": True,
-                "data": serializer.data
-            })
-        
-        serializer = self.get_serializer(queryset, many=True, context={'request': request})
-        return Response({
-            "success": True,
-            "data": serializer.data
-        })
 
 
 class CheckSavedStatusView(APIView):

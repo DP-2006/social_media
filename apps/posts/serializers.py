@@ -3,6 +3,7 @@
 from rest_framework import serializers
 from .models import Post, Comment, Like
 from .models import Post, Comment, Like, SavedPost  
+from django.contrib.auth import get_user_model
 
 class PostSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
@@ -110,3 +111,75 @@ class SavePostResponseSerializer(serializers.Serializer):
     action = serializers.CharField() 
     message = serializers.CharField()
     saved_count = serializers.IntegerField()
+
+User = get_user_model()
+
+class UserMinimalSerializer(serializers.ModelSerializer):
+    display_name = serializers.SerializerMethodField()
+    profile_image = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'display_name', 'profile_image']
+    
+    def get_display_name(self, obj):
+        if hasattr(obj, 'profile') and obj.profile:
+            return obj.profile.display_name or obj.username
+        return obj.username
+    
+    def get_profile_image(self, obj):
+        if hasattr(obj, 'profile') and obj.profile and obj.profile.profile_image:
+            return obj.profile.profile_image.url
+        return None
+
+
+class PostSerializer(serializers.ModelSerializer):
+    user = UserMinimalSerializer(read_only=True)
+    likes_count = serializers.IntegerField(read_only=True)
+    comments_count = serializers.IntegerField(read_only=True)
+    is_liked = serializers.SerializerMethodField()
+    is_saved = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Post
+        fields = [
+            'id', 'user', 'content', 'image', 'image_url', 'created_at', 'updated_at',
+            'likes_count', 'comments_count', 'is_liked', 'is_saved'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_is_liked(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return obj.likes.filter(user=request.user).exists()
+        return False
+    
+    def get_is_saved(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return SavedPost.objects.filter(user=request.user, post=obj).exists()
+        return False
+    
+    def get_image_url(self, obj):
+        return obj.image.url if obj.image else None
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    user = UserMinimalSerializer(read_only=True)
+    replies = serializers.SerializerMethodField()
+    replies_count = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Comment
+        fields = ['id', 'user', 'post', 'parent', 'text', 'created_at', 'replies', 'replies_count']
+        read_only_fields = ['id', 'created_at']
+    
+    def get_replies(self, obj):
+        if obj.parent is None:
+            replies = obj.replies.select_related('user', 'user__profile').order_by('created_at')
+            return CommentSerializer(replies, many=True, context=self.context).data
+        return []
+    
+    def get_replies_count(self, obj):
+        return obj.replies.count() if obj.parent is None else 0
