@@ -238,7 +238,7 @@ class ReplySuggestionView(GenericAPIView):
         return Response({
             "success": True,
             "data": {
-                "suggested_reply": "چه جالب! بگو بیشتر برام"
+                "suggested_reply": "چه جالب!"
             }
         })
 
