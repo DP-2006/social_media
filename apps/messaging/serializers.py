@@ -676,7 +676,7 @@ class LeaveGroupSerializer(serializers.Serializer):
 class MarkReadSerializer(serializers.Serializer):
     """Serializer for marking messages as read"""
     message_ids = serializers.ListField(
-        child=serializers.IntegerField(),
+        child=serializers.IntegerField(),      
         required=False,
         help_text="List of message IDs to mark as read"
     )
