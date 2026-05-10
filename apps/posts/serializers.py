@@ -1,5 +1,4 @@
 
-
 # # apps/posts/serializers.py
 # from rest_framework import serializers
 # from django.contrib.auth import get_user_model
@@ -114,10 +113,9 @@
 #         model = Comment
 #         fields = [
 #             'id', 'user', 'post', 'parent', 'text', 
-#             'created_at', 'updated_at', 'replies', 
-#             'replies_count', 'is_mine'
+#             'created_at', 'replies', 'replies_count', 'is_mine'
 #         ]
-#         read_only_fields = ['id', 'created_at', 'updated_at', 'post']
+#         read_only_fields = ['id', 'created_at', 'post']
     
 #     def get_replies(self, obj):
 #         if obj.parent is None:
@@ -247,6 +245,8 @@
 
 
 
+
+
 # apps/posts/serializers.py
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
@@ -276,23 +276,26 @@ class UserMinimalSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    """Serializer for Post model"""
+    """Serializer for Post model - supports file display"""
     user = UserMinimalSerializer(read_only=True)
     likes_count = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
     is_saved = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
+    file_url = serializers.SerializerMethodField()
+    file_info = serializers.SerializerMethodField()
     share_count = serializers.SerializerMethodField()
     
     class Meta:
         model = Post
         fields = [
             'id', 'user', 'content', 'image', 'image_url', 
+            'file', 'file_url', 'file_info', 'file_name', 'file_size',
             'created_at', 'updated_at', 'likes_count', 
             'comments_count', 'is_liked', 'is_saved', 'share_count'
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'file_name', 'file_size']
     
     def get_likes_count(self, obj):
         return obj.likes.count()
@@ -319,35 +322,79 @@ class PostSerializer(serializers.ModelSerializer):
         if obj.image and hasattr(obj.image, 'url'):
             return obj.image.url
         return None
+    
+    def get_file_url(self, obj):
+        if obj.file and hasattr(obj.file, 'url'):
+            return obj.file.url
+        return None
+    
+    def get_file_info(self, obj):
+        if obj.file:
+            return {
+                'name': obj.file_name or obj.file.name.split('/')[-1],
+                'size': obj.file_size or obj.file.size,
+                'size_mb': round((obj.file_size or obj.file.size) / (1024 * 1024), 2),
+                'extension': obj.file.name.split('.')[-1].lower() if '.' in obj.file.name else 'unknown'
+            }
+        return None
 
 
 class PostCreateSerializer(serializers.ModelSerializer):
-    """Serializer for creating a new post"""
+    """Serializer for creating a new post - supports any file type"""
+    
     class Meta:
         model = Post
-        fields = ['content', 'image']
+        fields = ['content', 'image', 'file']
         extra_kwargs = {
             'content': {'required': False, 'allow_blank': True},
-            'image': {'required': False}
+            'image': {'required': False},
+            'file': {'required': False}
         }
     
     def validate(self, data):
-        if not data.get('content') and not data.get('image'):
-            raise serializers.ValidationError("Either content or image is required")
+        # حداقل یکی از سه فیلد باید پر باشد
+        if not data.get('content') and not data.get('image') and not data.get('file'):
+            raise serializers.ValidationError("Either content, image, or file is required")
+        
+        # اعتبارسنجی محتوا
         if data.get('content') and len(data.get('content')) > 5000:
-            raise serializers.ValidationError("Content cannot exceed 5000 characters")
+            raise serializers.ValidationError({"content": "Content cannot exceed 5000 characters"})
+        
+        # اعتبارسنجی فایل (اختیاری)
+        if data.get('file'):
+            max_size = 100 * 1024 * 1024  # 100 MB
+            if data['file'].size > max_size:
+                raise serializers.ValidationError(
+                    {"file": f"File size cannot exceed {max_size // (1024 * 1024)} MB"}
+                )
+        
         return data
 
 
 class PostUpdateSerializer(serializers.ModelSerializer):
-    """Serializer for updating a post"""
+    """Serializer for updating a post - supports any file type"""
+    
     class Meta:
         model = Post
-        fields = ['content', 'image']
+        fields = ['content', 'image', 'file']
         extra_kwargs = {
             'content': {'required': False, 'allow_blank': True},
-            'image': {'required': False}
+            'image': {'required': False},
+            'file': {'required': False}
         }
+    
+    def validate(self, data):
+        if data.get('content') and len(data.get('content')) > 5000:
+            raise serializers.ValidationError({"content": "Content cannot exceed 5000 characters"})
+        
+        if data.get('file'):
+            max_size = 100 * 1024 * 1024  # 100 MB
+            if data['file'].size > max_size:
+                raise serializers.ValidationError(
+                    {"file": f"File size cannot exceed {max_size // (1024 * 1024)} MB"}
+                )
+        
+        return data
 
 
 class CommentSerializer(serializers.ModelSerializer):

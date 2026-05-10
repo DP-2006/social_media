@@ -1,3 +1,4 @@
+from django.core.cache import cache
 class OllamaHashtagService:
     def __init__(self, user):
         self.user = user
