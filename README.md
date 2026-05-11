@@ -13,7 +13,7 @@
   <strong>Intelligent Social Network with AI-Powered Anonymous Chat Matching</strong>
   
 <p align="center">
-  <strong>An Instagram‑Inspired Network built with Django</strong>  
+  <strong>An SAFA‑Inspired Network built with Django</strong>  
   <br><br>
   ⭐ <em>"Better than wen you see!"</em> ⭐
 </p>
