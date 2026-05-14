@@ -6,7 +6,6 @@ from django.conf import settings
 User = get_user_model()
 
 
-# ========== Base Serializers ==========
 class SearchQuerySerializer(serializers.Serializer):
     """Base serializer for search query parameters"""
     q = serializers.CharField(
@@ -47,7 +46,6 @@ class GlobalSearchQuerySerializer(SearchQuerySerializer):
 
 
 class SearchPostsQuerySerializer(SearchQuerySerializer):
-    """Serializer for posts search query parameters"""
     use_ollama = serializers.BooleanField(
         required=False,
         default=True,
@@ -56,7 +54,6 @@ class SearchPostsQuerySerializer(SearchQuerySerializer):
 
 
 class SearchByUsernameSerializer(serializers.Serializer):
-    """Serializer for search by username"""
     username = serializers.CharField(
         required=True,
         min_length=1,
@@ -74,7 +71,6 @@ class SearchByUsernameSerializer(serializers.Serializer):
 
 
 class SearchUsersQuerySerializer(serializers.Serializer):
-    """Serializer for users search query parameters"""
     q = serializers.CharField(
         required=True,
         min_length=2,
@@ -91,7 +87,6 @@ class SearchUsersQuerySerializer(serializers.Serializer):
 
 
 class SearchHashtagsQuerySerializer(serializers.Serializer):
-    """Serializer for hashtags search query parameters"""
     q = serializers.CharField(
         required=True,
         min_length=2,
@@ -108,7 +103,6 @@ class SearchHashtagsQuerySerializer(serializers.Serializer):
 
 
 class SearchSuggestionsQuerySerializer(serializers.Serializer):
-    """Serializer for search suggestions query parameters"""
     q = serializers.CharField(
         required=True,
         min_length=2,
@@ -124,9 +118,7 @@ class SearchSuggestionsQuerySerializer(serializers.Serializer):
     )
 
 
-# ========== Response Serializers ==========
 class UserSearchSerializer(serializers.Serializer):
-    """Serializer for user search results"""
     id = serializers.UUIDField(help_text="User ID")
     username = serializers.CharField(help_text="Username")
     display_name = serializers.CharField(allow_blank=True, allow_null=True, help_text="Display name")
@@ -140,7 +132,6 @@ class UserSearchSerializer(serializers.Serializer):
 
 
 class HashtagSearchSerializer(serializers.Serializer):
-    """Serializer for hashtag search results"""
     name = serializers.CharField(help_text="Hashtag name (without #)")
     usage_count = serializers.IntegerField(help_text="Number of times hashtag has been used")
     url = serializers.SerializerMethodField(help_text="URL to hashtag page")
@@ -154,8 +145,7 @@ class HashtagSearchSerializer(serializers.Serializer):
 
 
 class PostSearchSerializer(serializers.Serializer):
-    """Serializer for post search results"""
-    id = serializers.IntegerField()
+    id = serializers.UUIDField()
     content = serializers.CharField(allow_blank=True)
     image_url = serializers.CharField(allow_null=True)
     created_at = serializers.DateTimeField()
@@ -166,7 +156,6 @@ class PostSearchSerializer(serializers.Serializer):
 
 
 class SearchResultSerializer(serializers.Serializer):
-    """Serializer for global search results"""
     query = serializers.CharField(help_text="Original search query")
     source = serializers.CharField(help_text="Search engine used (ollama/simple)")
     smart_keywords = serializers.ListField(
@@ -188,7 +177,6 @@ class SearchResultSerializer(serializers.Serializer):
 
 
 class SearchSuggestionUserSerializer(serializers.Serializer):
-    """Serializer for user search suggestions"""
     type = serializers.CharField(default="user", help_text="Result type")
     text = serializers.CharField(help_text="Username")
     display = serializers.CharField(help_text="Display name or username")
@@ -197,7 +185,6 @@ class SearchSuggestionUserSerializer(serializers.Serializer):
 
 
 class SearchSuggestionHashtagSerializer(serializers.Serializer):
-    """Serializer for hashtag search suggestions"""
     type = serializers.CharField(default="hashtag", help_text="Result type")
     text = serializers.CharField(help_text="Hashtag text (with #)")
     count = serializers.IntegerField(help_text="Usage count")
@@ -205,13 +192,11 @@ class SearchSuggestionHashtagSerializer(serializers.Serializer):
 
 
 class SearchSuggestionsSerializer(serializers.Serializer):
-    """Serializer for search suggestions response"""
     users = SearchSuggestionUserSerializer(many=True, help_text="User suggestions")
     hashtags = SearchSuggestionHashtagSerializer(many=True, help_text="Hashtag suggestions")
 
 
 class SearchConfigSerializer(serializers.Serializer):
-    """Serializer for search configuration"""
     use_ollama = serializers.BooleanField(help_text="Whether Ollama AI search is enabled")
     ollama_timeout = serializers.IntegerField(help_text="Ollama request timeout in seconds")
     ollama_model = serializers.CharField(
