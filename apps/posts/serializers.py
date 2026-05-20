@@ -191,7 +191,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
 class SavedPostSerializer(serializers.ModelSerializer):
     post = PostSerializer(read_only=True)
-    post_id = serializers.IntegerField(write_only=True, help_text="ID of the post to save")
+    post_id = serializers.IntegerField(write_only=True, help_text="ID of the post to the save post ")
     saved_at = serializers.DateTimeField(read_only=True)
     
     class Meta:
@@ -284,18 +284,6 @@ class CommentUpdateSerializer(serializers.ModelSerializer):
         if len(value) > 1000:
             raise serializers.ValidationError("کامنت نمی‌تواند بیشتر از 1000 کاراکتر باشد")
         return value.strip()
-
-
-
-
-
-
-
-
-
-
-
-
 
 class CommentUpdateSerializer(serializers.ModelSerializer):
     """Serializer for updating a comment"""
