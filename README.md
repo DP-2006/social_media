@@ -572,8 +572,9 @@ GitHub: DP-2006
 ───────────────────────────────────────────────────────────────────────────────
 
 - GitHub Issues: https://github.com/DP-2006/social_media-SAFA-/issues
-- Email: babkuan@gmail.com
-
+- Email: babkuand@gmail.com
+-ID cart for donnate :
+  6037-7013-2958-2614
 
 <div align="center">
 
