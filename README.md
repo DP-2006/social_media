@@ -578,11 +578,11 @@ GitHub: DP-2006
 
 <div align="center">
 
-### 🚀 Built with passion, powered by AI
+
 
 **⭐ If you like this project, give it a star! ⭐**
 
-<sub>© 2025 SAFA Network - All rights reserved</sub>
+<sub>© 2026 SAFA Network - All rights reserved</sub>
 
 </div>
 
