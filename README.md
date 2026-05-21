@@ -146,29 +146,85 @@ REFRESH_TOKEN_LIFETIME=1
 
 
 
-## Ollama Configuration
+
+
+
+
+
+
+
+
+
+
+
+# README Section
+
+## Ollama AI Integration
 
 ### Model Installation
-Install one of the available models provided by Ollama. We recommend the **Qwen 2.7B** model for now.
 
-> ⚠️ **Note:** You may encounter some issues, such as lack of image processing support.
+Install the desired model using Ollama. We currently recommend the **Qwen 2.7B** model.
 
-### Changing the Model & Settings
-To change the model or add more configurations:
-- Navigate to `app ml → service → ollama_client.py`
+> ⚠️ **Note:** You may encounter issues such as lack of image processing support with certain models.
 
-For the **Hashtag** and **Direct** sections, go to the respective `service` directory and configure the model and running port settings.
+### Configuration
 
-> ⚠️ **Important:** Ensure the required port is open in your firewall before running.
+To change the model or adjust additional settings:
 
-### Explore Section Status
-The Ollama feature in the **Explore** section is currently **disabled** due to server execution issues.
+1. Navigate to `app ml → service → ollama_client.py`
+2. Modify the model and port settings as needed
 
-To enable it:
-1. Go to `app interaction → serializer`
-2. Activate the endpoint
+For **hashtag** and **direct messaging** sections, follow the same approach in the `service` directory.
 
-> 💡 **Tip:** The Explore section will work without Ollama for enthusiasts who want to test it. Full Ollama integration will be added by the development team soon.
+> ⚠️ **Important:** Ensure the required port is open in your firewall before running the application.
+
+### Ollama Explore (Temporarily Disabled)
+
+The Ollama Explore feature is currently **paused** due to server execution issues. To get started:
+
+1. Go to the `serializer` in `ml` app
+2. Enable `interaction service`
+
+> 💡 **Note:** Services operate independently across all sections, making them reusable in other development projects. All existing apps will be updated accordingly in the near future.
+
+### API Development
+
+Python developers can write custom `serializers` and `views` to create API endpoints. This feature will be added by the development team soon.
+
+> 🚀 **Good News:** The system works without Ollama Explore, which is great for enthusiasts who want to experiment!
+
+### Database Support
+
+This system supports **SQL** and **PostgreSQL** databases. Configuration is available in `config → setting`.
+
+> ⚠️ **Note:** The current databases do not utilize a multi-tenant system. Please keep this in mind when referencing the codebase.
+
+### AI Learning System
+
+The system performs **gradual AI learning** through Ollama, albeit in a limited capacity. The goal is to leverage Ollama's capabilities effectively.
+
+> ⚠️ **Important:** AI response quality depends entirely on the model and its training. **Do not rely solely on AI outputs** — errors are likely to occur!
+
+---
+
+## Contributing
+
+We welcome suggestions, corrections, and feedback from all enthusiasts in this field. Your input is greatly appreciated! 🙏
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
