@@ -561,28 +561,22 @@ Copyright (c) 2025 SAFA Network
 GitHub: DP-2006
 
 ───────────────────────────────────────────────────────────────────────────────
-🙏 SPECIAL THANKS
-───────────────────────────────────────────────────────────────────────────────
-
-- Django Community
-- All Contributors & Testers
-
-───────────────────────────────────────────────────────────────────────────────
 📞 SUPPORT & CONTACT
 ───────────────────────────────────────────────────────────────────────────────
 
 - GitHub Issues: https://github.com/DP-2006/social_media-SAFA-/issues
 - Email: babkuand@gmail.com
 -ID cart for donnate :
-  6037-7013-2958-2614
-
+  5892-1012-2958-2614
+  بانک سپه-دانیال پورمهدی
+  sepah bank-Danil pourmehdi
 <div align="center">
 
 
 
 **⭐ If you like this project, give it a star! ⭐**
 
-<sub>© 2026 SAFA Network - All rights reserved</sub>
+<sub>© 2026 SAFA - All rights reserved</sub>
 
 </div>
 
