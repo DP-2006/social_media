@@ -27,7 +27,7 @@ from .serializers import (
 )
 
 
-def get_search_service(request_user=None):
+def get_search_service(request_user=None):  
     """Factory function to get the appropriate search service"""
     use_ollama = getattr(settings, 'SEARCH_USE_OLLAMA', True)
     

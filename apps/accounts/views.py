@@ -61,8 +61,7 @@ class VerifyOTPView(GenericAPIView):
             from core.services.sms_service import OTPService as OTPServiceClass
             normalized_phone = OTPServiceClass.normalize_phone(phone)
             
-            user, created = User.objects.get_or_create#get_or_404 -> اینطوری هم میشه کردنش 
-            (
+            user, created = User.objects.get_or_create(
                 phone=normalized_phone,
                 defaults={'username': f"user_{normalized_phone[-8:]}"}
             )
