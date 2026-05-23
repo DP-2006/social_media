@@ -210,7 +210,7 @@ class ExploreView(GenericAPIView):
             popularity = likes_count + comments_count * 2
             popularity_score = min(popularity / 500, 0.5)
             
-            hours_old = (timezone.now() - post.created_at).total_seconds() / 3600  # ✅ اصلاح شد
+            hours_old = (timezone.now() - post.created_at).total_seconds() / 3600 
             recency_score = max(0, 1 - (hours_old / 168))
             
             score = (popularity_score * 0.6) + (recency_score * 0.4)
