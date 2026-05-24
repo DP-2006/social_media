@@ -10,6 +10,9 @@ from apps.follows.models import Follow
 from datetime import timedelta  
        
 from typing import Dict
+from apps.posts.models import Post
+from apps.follows.models import Follow
+from apps.interactions.models import UserPostEngagement
 
 
 class EngagementMixin:
@@ -128,11 +131,8 @@ class BulkTrackView(EngagementMixin, GenericAPIView):
 
 class FeedView(GenericAPIView):
     permission_classes = [IsAuthenticated]
-    
+       
     def get(self, request):
-        from apps.posts.models import Post
-        from apps.follows.models import Follow
-        from apps.interactions.models import UserPostEngagement
         
         limit = min(int(request.GET.get('limit', 20)), 50)
         offset = int(request.GET.get('offset', 0))
@@ -158,7 +158,6 @@ class FeedView(GenericAPIView):
                 weight = engagement.total_value_score
             except:
              
-                likes_count = post.likes_count if hasattr(post, 'likes_count') else post.likes.count()
                 comments_count = post.comments_count if hasattr(post, 'comments_count') else post.comments.count()
                 popularity = likes_count + comments_count * 2
                 weight = min(0.2 + (popularity / 1000), 0.5)
@@ -228,20 +227,6 @@ class FeedView(GenericAPIView):
 #             'count': len(paginated),
 #             'has_more': len(paginated) == limit
 #         })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class ExploreView(GenericAPIView):
     permission_classes = [IsAuthenticated]
@@ -348,24 +333,6 @@ class ExploreView(GenericAPIView):
             'used_ollama': False,
             'algorithm': 'simple'
         })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

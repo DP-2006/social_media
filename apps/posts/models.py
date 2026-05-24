@@ -66,7 +66,7 @@ class Post(BaseModel):
         if not user.is_authenticated:
             return None, False
         
-        like, created = Like.objects.get_or_create(user=user, post=self)
+        like, created = Like.objects.get_or_create(   user=user, post=self)
         
         if not created:
             like.delete()

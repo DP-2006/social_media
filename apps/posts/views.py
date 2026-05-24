@@ -351,3 +351,48 @@ class CommentUpdateView(GenericAPIView):
             "message": "کامنت با موفقیت ویرایش شد",
             "data": CommentSerializer(updated_comment, context={'request': request}).data
         }, status=status.HTTP_200_OK)
+
+class CommentDetailView(GenericAPIView):
+    """
+    Update or delete a comment
+    DELETE: Soft deletes the comment
+    PATCH: Updates the comment text
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def patch(self, request, comment_id):
+        comment = get_object_or_404(Comment, id=comment_id, is_deleted=False)
+        
+        if comment.user != request.user:
+            return Response({
+                "success": False,
+                "error": "شما اجازه ویرایش این کامنت را ندارید"
+            }, status=status.HTTP_403_FORBIDDEN)
+        
+        serializer = CommentUpdateSerializer(comment, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        
+        updated_comment = serializer.save()
+        
+        return Response({
+            "success": True,
+            "message": "کامنت با موفقیت ویرایش شد",
+            "data": CommentSerializer(updated_comment, context={'request': request}).data
+        }, status=status.HTTP_200_OK)
+    
+    def delete(self, request, comment_id):
+        comment = get_object_or_404(Comment, id=comment_id)
+        
+        if comment.user != request.user and comment.post.user != request.user:
+            return Response({
+                "success": False,
+                "error": "شما اجازه حذف این کامنت را ندارید"
+            }, status=status.HTTP_403_FORBIDDEN)
+        
+        comment.is_deleted = True
+        comment.save()
+        
+        return Response({
+            "success": True, 
+            "message": "کامنت با موفقیت حذف شد"
+        }, status=status.HTTP_200_OK)

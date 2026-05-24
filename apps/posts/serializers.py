@@ -284,20 +284,3 @@ class CommentUpdateSerializer(serializers.ModelSerializer):
         if len(value) > 1000:
             raise serializers.ValidationError("کامنت نمی‌تواند بیشتر از 1000 کاراکتر باشد")
         return value.strip()
-
-class CommentUpdateSerializer(serializers.ModelSerializer):
-    """Serializer for updating a comment"""
-    
-    class Meta:
-        model = Comment
-        fields = ['text']
-        extra_kwargs = {
-            'text': {'required': True, 'allow_blank': False}
-        }
-    
-    def validate_text(self, value):
-        if not value or not value.strip():
-            raise serializers.ValidationError("Comment text cannot be empty")
-        if len(value) > 1000:
-            raise serializers.ValidationError("Comment cannot exceed 1000 characters")
-        return value.strip()
