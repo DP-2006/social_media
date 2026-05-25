@@ -57,5 +57,9 @@ urlpatterns = [
     path('videos/', VideoPostsListView.as_view(), name='video-posts'),
     path('videos/trending/', TrendingVideosView.as_view(), name='trending-videos'),
     path('videos/<uuid:post_id>/', SingleVideoView.as_view(), name='single-video'),
+    path('feed/', views.FeedView.as_view(), name='feed'),
+    path('debug/user/<uuid:user_id>/posts/', views.DebugUserPostsView.as_view(), name='debug-user-posts'),
+
+
 ]
 

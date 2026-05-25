@@ -22,11 +22,49 @@ from .serializers import (
 from core.pagination import StandardPagination
 
 
+# class PostListCreateView(generics.ListCreateAPIView):
+#     """
+#     List all posts or create a new post
+    
+#     GET: Returns paginated list of posts
+#     POST: Creates a new post with content and/or image
+#     """
+#     serializer_class = PostSerializer
+#     permission_classes = [IsAuthenticated]
+#     parser_classes = [MultiPartParser, FormParser, JSONParser]
+#     pagination_class = StandardPagination
+    
+#     def get_queryset(self):
+#         queryset = Post.objects.filter(is_deleted=False).order_by('-created_at')
+        
+#         # Filter by user_id if provided
+#         user_id = self.request.query_params.get('user_id')
+#         if user_id:
+#             queryset = queryset.filter(user_id=user_id)
+        
+#         # Filter by hashtag if provided
+#         hashtag = self.request.query_params.get('hashtag')
+#         if hashtag:
+#             queryset = queryset.filter(post_hashtags__hashtag__name__icontains=hashtag)
+        
+#         return queryset.select_related('user', 'user__profile').prefetch_related('likes','comments')
+    
+#     def get_serializer_class(self):
+#         if self.request.method == 'POST':
+#             return PostCreateSerializer
+#         return PostSerializer
+    
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.request.user)
+
+
+# apps/posts/views.py - فقط قسمت PostListCreateView رو اینطوری اصلاح کن
+
 class PostListCreateView(generics.ListCreateAPIView):
     """
     List all posts or create a new post
     
-    GET: Returns paginated list of posts
+    GET: Returns paginated list of posts (ONLY current user's posts)
     POST: Creates a new post with content and/or image
     """
     serializer_class = PostSerializer
@@ -35,19 +73,20 @@ class PostListCreateView(generics.ListCreateAPIView):
     pagination_class = StandardPagination
     
     def get_queryset(self):
-        queryset = Post.objects.filter(is_deleted=False).order_by('-created_at')
+        queryset = Post.objects.filter(
+            is_deleted=False,
+            user=self.request.user  
+        ).order_by('-created_at')
         
-        # Filter by user_id if provided
         user_id = self.request.query_params.get('user_id')
         if user_id:
             queryset = queryset.filter(user_id=user_id)
         
-        # Filter by hashtag if provided
         hashtag = self.request.query_params.get('hashtag')
         if hashtag:
             queryset = queryset.filter(post_hashtags__hashtag__name__icontains=hashtag)
         
-        return queryset.select_related('user', 'user__profile').prefetch_related('likes','comments')
+        return queryset.select_related('user', 'user__profile').prefetch_related('likes', 'comments')
     
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -56,6 +95,7 @@ class PostListCreateView(generics.ListCreateAPIView):
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
 
 
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -505,4 +545,92 @@ class SingleVideoView(GenericAPIView):
         return Response({
             "success": True,
             "data": serializer.data
+        })
+
+
+# class FeedView(generics.ListAPIView):
+#     """
+#     Get feed posts (posts from people you follow)
+    
+#     GET /api/posts/feed/
+#     """
+#     serializer_class = PostSerializer
+#     permission_classes = [IsAuthenticated]
+#     pagination_class = StandardPagination
+    
+#     def get_queryset(self):
+#         from apps.follows.models import Follow
+        
+#         user = self.request.user
+        
+#         following_ids = Follow.objects.filter(
+#             follower=user,
+#             is_accepted=True
+#         ).values_list('following_id', flat=True)
+        
+#         queryset = Post.objects.filter(
+#             is_deleted=False,
+#             user__in=list(following_ids) + [user.id]
+#         ).order_by('-created_at')
+        
+#         return queryset.select_related('user', 'user__profile').prefetch_related('likes', 'comments')
+
+class FeedView(generics.ListAPIView):
+    """
+    Get all posts sorted by popularity (likes count)
+    """
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = StandardPagination
+    
+    def get_queryset(self):
+        queryset = Post.objects.filter(
+            is_deleted=False
+        ).order_by('-likes_count', '-created_at')  
+        
+        return queryset.select_related('user', 'user__profile').prefetch_related('likes', 'comments')
+
+
+
+class DebugUserPostsView(GenericAPIView):
+    """
+    DEBUG: Show what user_id is being sent
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, user_id):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        # چک کن کاربر وجود داره یا نه
+        try:
+            target_user = User.objects.get(id=user_id)
+            target_exists = True
+            target_username = target_user.username
+        except User.DoesNotExist:
+            target_exists = False
+            target_username = None
+        
+        # پست‌های اون کاربر
+        posts = Post.objects.filter(user_id=user_id, is_deleted=False) if target_exists else []
+        
+        return Response({
+            "debug_info": {
+                "user_id_sent_from_frontend": str(user_id),
+                "current_logged_in_user_id": str(request.user.id),
+                "current_logged_in_username": request.user.username,
+                "target_user_exists": target_exists,
+                "target_username": target_username,
+                "is_same_user": str(request.user.id) == str(user_id)
+            },
+            "posts_count": posts.count(),
+            "posts": [
+                {
+                    "id": str(p.id),
+                    "content": p.content[:100],
+                    "author_id": str(p.user.id),
+                    "author_username": p.user.username
+                }
+                for p in posts[:5]
+            ]
         })
