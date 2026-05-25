@@ -228,6 +228,117 @@ class FeedView(GenericAPIView):
 #             'has_more': len(paginated) == limit
 #         })
 
+# class ExploreView(GenericAPIView):
+#     permission_classes = [IsAuthenticated]
+    
+#     def _is_ollama_available(self):
+#         """بررسی در دسترس بودن Ollama"""
+#         try:
+#             from apps.ml.ollama_client import OllamaClient
+#             client = OllamaClient()
+#             result = client.generate("test", max_tokens=1, timeout=3)
+#             return result.get('success', False)
+#         except Exception as e:
+#             return False
+    
+#     def _get_explore_with_ollama(self, request, limit, offset):
+#         """اکسپلور با Ollama"""
+#         from apps.interactions.services.explore_feed import ExploreFeedService
+        
+#         explore_service = ExploreFeedService(request.user)
+#         result = explore_service.get_explore_feed(
+#             limit=limit,
+#             offset=offset,
+#             use_ollama=True
+#         )
+#         return result
+    
+#     def get(self, request):
+#         limit = min(int(request.GET.get('limit', 30)), 100)
+#         offset = int(request.GET.get('offset', 0))
+#         use_ollama = request.GET.get('use_ollama', 'true').lower() == 'true'
+        
+#         # اگر کاربر Ollama رو میخواد و در دسترسه
+#         if use_ollama and self._is_ollama_available():
+#             try:
+#                 result = self._get_explore_with_ollama(request, limit, offset)
+                
+#                 if result.get('posts') and len(result['posts']) > 0:
+#                     from apps.posts.serializers import PostSerializer
+#                     serialized_posts = PostSerializer(
+#                         result['posts'],
+#                         many=True,
+#                         context={'request': request}
+#                     ).data
+                    
+#                     # اضافه کردن امتیاز و دلایل
+#                     for i, post_data in enumerate(serialized_posts):
+#                         if i < len(result.get('scores', [])):
+#                             post_data['explore_score'] = result['scores'][i]
+#                         if i < len(result.get('reasons', [])):
+#                             post_data['explore_reasons'] = result['reasons'][i]
+                    
+#                     return Response({
+#                         'explore': serialized_posts,
+#                         'count': len(serialized_posts),
+#                         'has_more': result.get('has_next', False),
+#                         'used_hashtags': result.get('used_hashtags', []),
+#                         'used_ollama': True,
+#                         'algorithm': 'ollama'
+#                     })
+#             except Exception as e:
+#                 pass  # میره سراغ fallback
+        
+#         # Fallback: الگوریتم ساده (کد قبلی خودت بدون تغییر)
+#         following_ids = Follow.objects.filter(
+#             follower=request.user
+#         ).values_list('following_id', flat=True)
+        
+#         week_ago = timezone.now() - timedelta(days=7) 
+        
+#         posts = Post.objects.filter(
+#             created_at__gte=week_ago,
+#             is_deleted=False
+#         ).exclude(user_id__in=following_ids).exclude(user=request.user)
+        
+#         scored_posts = []
+#         seen_users = set()
+        
+#         for post in posts:
+#             if post.user_id in seen_users:
+#                 continue
+            
+#             likes_count = post.likes_count if hasattr(post, 'likes_count') else post.likes.count()
+#             comments_count = post.comments_count if hasattr(post, 'comments_count') else post.comments.count()
+#             popularity = likes_count + comments_count * 2
+#             popularity_score = min(popularity / 500, 0.5)
+            
+#             hours_old = (timezone.now() - post.created_at).total_seconds() / 3600
+#             recency_score = max(0, 1 - (hours_old / 168))
+            
+#             score = (popularity_score * 0.6) + (recency_score * 0.4)
+#             scored_posts.append((score, post))
+#             seen_users.add(post.user_id)
+        
+#         scored_posts.sort(key=lambda x: x[0], reverse=True)
+#         paginated = scored_posts[offset:offset+limit]
+        
+#         from apps.posts.serializers import PostSerializer
+#         serializer = PostSerializer([p for _, p in paginated], many=True, context={'request': request})
+        
+#         return Response({
+#             'explore': serializer.data,
+#             'count': len(paginated),
+#             'has_more': len(paginated) == limit,
+#             'used_ollama': False,
+#             'algorithm': 'simple'
+#         })
+
+
+
+
+
+
 class ExploreView(GenericAPIView):
     permission_classes = [IsAuthenticated]
     
@@ -254,6 +365,8 @@ class ExploreView(GenericAPIView):
         return result
     
     def get(self, request):
+        from django.db.models import Count
+        
         limit = min(int(request.GET.get('limit', 30)), 100)
         offset = int(request.GET.get('offset', 0))
         use_ollama = request.GET.get('use_ollama', 'true').lower() == 'true'
@@ -289,49 +402,26 @@ class ExploreView(GenericAPIView):
             except Exception as e:
                 pass  # میره سراغ fallback
         
-        # Fallback: الگوریتم ساده (کد قبلی خودت بدون تغییر)
-        following_ids = Follow.objects.filter(
-            follower=request.user
-        ).values_list('following_id', flat=True)
-        
-        week_ago = timezone.now() - timedelta(days=7) 
-        
+        # ✅ استفاده از annotate برای مرتب‌سازی بر اساس تعداد لایک
         posts = Post.objects.filter(
-            created_at__gte=week_ago,
             is_deleted=False
-        ).exclude(user_id__in=following_ids).exclude(user=request.user)
+        ).annotate(
+            like_count=Count('likes')  # ایجاد فیلد مجازی like_count
+        ).order_by('-like_count', '-created_at')  # مرتب‌سازی بر اساس like_count
         
-        scored_posts = []
-        seen_users = set()
-        
-        for post in posts:
-            if post.user_id in seen_users:
-                continue
-            
-            likes_count = post.likes_count if hasattr(post, 'likes_count') else post.likes.count()
-            comments_count = post.comments_count if hasattr(post, 'comments_count') else post.comments.count()
-            popularity = likes_count + comments_count * 2
-            popularity_score = min(popularity / 500, 0.5)
-            
-            hours_old = (timezone.now() - post.created_at).total_seconds() / 3600
-            recency_score = max(0, 1 - (hours_old / 168))
-            
-            score = (popularity_score * 0.6) + (recency_score * 0.4)
-            scored_posts.append((score, post))
-            seen_users.add(post.user_id)
-        
-        scored_posts.sort(key=lambda x: x[0], reverse=True)
-        paginated = scored_posts[offset:offset+limit]
+        total_count = posts.count()
+        paginated_posts = posts[offset:offset + limit]
         
         from apps.posts.serializers import PostSerializer
-        serializer = PostSerializer([p for _, p in paginated], many=True, context={'request': request})
+        serializer = PostSerializer(paginated_posts, many=True, context={'request': request})
         
         return Response({
             'explore': serializer.data,
-            'count': len(paginated),
-            'has_more': len(paginated) == limit,
+            'count': len(paginated_posts),
+            'total_count': total_count,
+            'has_more': (offset + limit) < total_count,
             'used_ollama': False,
-            'algorithm': 'simple'
+            'algorithm': 'popularity_by_likes'
         })
 
 

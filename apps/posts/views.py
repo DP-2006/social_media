@@ -602,7 +602,6 @@ class DebugUserPostsView(GenericAPIView):
         from django.contrib.auth import get_user_model
         User = get_user_model()
         
-        # چک کن کاربر وجود داره یا نه
         try:
             target_user = User.objects.get(id=user_id)
             target_exists = True
