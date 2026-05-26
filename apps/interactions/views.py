@@ -384,7 +384,7 @@ class ExploreView(GenericAPIView):
                         context={'request': request}
                     ).data
                     
-                    # اضافه کردن امتیاز و دلایل
+                   
                     for i, post_data in enumerate(serialized_posts):
                         if i < len(result.get('scores', [])):
                             post_data['explore_score'] = result['scores'][i]
@@ -402,12 +402,11 @@ class ExploreView(GenericAPIView):
             except Exception as e:
                 pass  # میره سراغ fallback
         
-        # ✅ استفاده از annotate برای مرتب‌سازی بر اساس تعداد لایک
         posts = Post.objects.filter(
             is_deleted=False
         ).annotate(
-            like_count=Count('likes')  # ایجاد فیلد مجازی like_count
-        ).order_by('-like_count', '-created_at')  # مرتب‌سازی بر اساس like_count
+            like_count=Count('likes')  
+        ).order_by('-like_count', '-created_at')  
         
         total_count = posts.count()
         paginated_posts = posts[offset:offset + limit]
