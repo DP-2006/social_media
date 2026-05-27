@@ -783,6 +783,41 @@ class PostCreateSerializer(serializers.ModelSerializer):
         return data
 
 
+# class PostUpdateSerializer(serializers.ModelSerializer):
+#     """Serializer for updating a post - supports video, image, and file"""
+    
+#     class Meta:
+#         model = Post
+#         fields = ['content', 'image', 'video', 'video_thumbnail', 'file']
+#         extra_kwargs = {
+#             'content': {'required': False, 'allow_blank': True},
+#             'image': {'required': False},
+#             'video': {'required': False},
+#             'video_thumbnail': {'required': False},
+#             'file': {'required': False}
+#         }
+    
+#     def validate(self, data):
+#         if data.get('content') and len(data.get('content')) > 5000:
+#             raise serializers.ValidationError({"content": "Content cannot exceed 5000 characters"})
+        
+#         if data.get('file'):
+#             max_size = 100 * 1024 * 1024  
+#             if data['file'].size > max_size:
+#                 raise serializers.ValidationError(
+#                     {"file": f"File size cannot exceed {max_size // (1024 * 1024)} MB"}
+#                 )
+        
+#         if data.get('video'):
+#             max_video_size = 500 * 1024 * 1024
+#             if data['video'].size > max_video_size:
+#                 raise serializers.ValidationError(
+#                     {"video": f"Video size cannot exceed {max_video_size // (1024 * 1024)} MB"}
+#                 )
+        
+#         return data
+
+
 class PostUpdateSerializer(serializers.ModelSerializer):
     """Serializer for updating a post - supports video, image, and file"""
     
@@ -791,16 +826,18 @@ class PostUpdateSerializer(serializers.ModelSerializer):
         fields = ['content', 'image', 'video', 'video_thumbnail', 'file']
         extra_kwargs = {
             'content': {'required': False, 'allow_blank': True},
-            'image': {'required': False},
-            'video': {'required': False},
-            'video_thumbnail': {'required': False},
-            'file': {'required': False}
+            'image': {'required': False, 'allow_null': True},  # allow_null اضافه کن
+            'video': {'required': False, 'allow_null': True},
+            'video_thumbnail': {'required': False, 'allow_null': True},
+            'file': {'required': False, 'allow_null': True}
         }
     
     def validate(self, data):
+        # اگه content خالی نباشه، طولش رو چک کن
         if data.get('content') and len(data.get('content')) > 5000:
             raise serializers.ValidationError({"content": "Content cannot exceed 5000 characters"})
         
+        # validation فایل
         if data.get('file'):
             max_size = 100 * 1024 * 1024  
             if data['file'].size > max_size:
@@ -808,6 +845,7 @@ class PostUpdateSerializer(serializers.ModelSerializer):
                     {"file": f"File size cannot exceed {max_size // (1024 * 1024)} MB"}
                 )
         
+        # validation ویدیو
         if data.get('video'):
             max_video_size = 500 * 1024 * 1024
             if data['video'].size > max_video_size:
@@ -816,6 +854,32 @@ class PostUpdateSerializer(serializers.ModelSerializer):
                 )
         
         return data
+    
+    def update(self, instance, validated_data):
+        """آپدیت فیلدها - اگه فیلد نیومده باشه، مقدار قبلی رو نگه دار"""
+        # محتوای متنی
+        if 'content' in validated_data:
+            instance.content = validated_data['content']
+        
+        # عکس - اگه None اومده بود یعنی حذفش کن
+        if 'image' in validated_data:
+            instance.image = validated_data['image']
+        
+        # ویدیو
+        if 'video' in validated_data:
+            instance.video = validated_data['video']
+        
+        # ویدیو تامبنیل
+        if 'video_thumbnail' in validated_data:
+            instance.video_thumbnail = validated_data['video_thumbnail']
+        
+        # فایل ضمیمه
+        if 'file' in validated_data:
+            instance.file = validated_data['file']
+        
+        instance.save()
+        return instance
+
 
 
 class CommentSerializer(serializers.ModelSerializer):

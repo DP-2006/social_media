@@ -1,0 +1,10 @@
+﻿services:
+  web:
+    build: .
+    container_name: social_network_web
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1

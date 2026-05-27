@@ -137,6 +137,31 @@ class PostListCreateView(generics.ListCreateAPIView):
 
 
 
+# class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     """
+#     Retrieve, update or delete a post
+    
+#     GET: Returns post details
+#     PUT/PATCH: Updates post content or image
+#     DELETE: Soft deletes the post
+#     """
+#     serializer_class = PostSerializer
+#     permission_classes = [IsAuthenticated]
+    
+#     def get_queryset(self):
+#         return Post.objects.filter(is_deleted=False)
+    
+#     def get_serializer_class(self):
+#         if self.request.method in ['PUT', 'PATCH']:
+#             return PostUpdateSerializer
+#         return PostSerializer
+    
+#     def perform_destroy(self, instance):
+#         instance.is_deleted = True
+#         instance.save()
+
+
+
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a post
@@ -147,6 +172,7 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]  
     
     def get_queryset(self):
         return Post.objects.filter(is_deleted=False)
@@ -156,9 +182,24 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
             return PostUpdateSerializer
         return PostSerializer
     
+    def perform_update(self, serializer):
+        """فقط صاحب پست بتونه ویرایش کنه"""
+        post = self.get_object()
+        if post.user != self.request.user:
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied("شما اجازه ویرایش این پست را ندارید")
+        serializer.save()
+    
     def perform_destroy(self, instance):
+        """فقط صاحب پست بتونه حذف کنه"""
+        if instance.user != self.request.user:
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied("شما اجازه حذف این پست را ندارید")
         instance.is_deleted = True
         instance.save()
+
+
+
 
 
 class LikeToggleView(GenericAPIView):

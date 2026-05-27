@@ -383,7 +383,7 @@ class PublicProfileView(GenericAPIView):
         
         # بررسی پروفایل خصوصی
         if profile.is_private and request.user != user:
-            # استفاده از مدل Follow به جای ویژگی followers
+    
             is_following = Follow.objects.filter(
                 follower=request.user, 
                 following=user
