@@ -101,23 +101,6 @@ class OTP(models.Model):
         return f"{self.phone} - {self.code} - {self.expires_at}"
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # apps/accounts/models.py
 
 # from django.db import models

@@ -60,11 +60,49 @@ from core.pagination import StandardPagination
 
 # apps/posts/views.py - فقط قسمت PostListCreateView رو اینطوری اصلاح کن
 
+# class PostListCreateView(generics.ListCreateAPIView):
+#     """
+#     List all posts or create a new post
+    
+#     GET: Returns paginated list of posts (ONLY current user's posts)
+#     POST: Creates a new post with content and/or image
+#     """
+        
+#     permission_classes = [IsAuthenticated]
+#     parser_classes = [MultiPartParser, FormParser, JSONParser]
+#     pagination_class = StandardPagination
+    
+#     def get_queryset(self):
+#         queryset = Post.objects.filter(
+#             is_deleted=False,
+#             user=self.request.user  
+#         ).order_by('-created_at')
+        
+#         user_id = self.request.query_params.get('user_id')
+#         if user_id:
+#             queryset = queryset.filter(user_id=user_id)
+        
+#         hashtag = self.request.query_params.get('hashtag')
+#         if hashtag:
+#             queryset = queryset.filter(post_hashtags__hashtag__name__icontains=hashtag)
+        
+#         return queryset.select_related('user', 'user__profile').prefetch_related('likes', 'comments')
+    
+#     def get_serializer_class(self):
+#         if self.request.method == 'POST':
+#             return PostCreateSerializer
+#         return PostSerializer
+    
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.request.user)
+
+
+
 class PostListCreateView(generics.ListCreateAPIView):
     """
     List all posts or create a new post
     
-    GET: Returns paginated list of posts (ONLY current user's posts)
+    GET: Returns paginated list of posts (ALL posts or filtered by user_id)
     POST: Creates a new post with content and/or image
     """
     serializer_class = PostSerializer
@@ -73,15 +111,15 @@ class PostListCreateView(generics.ListCreateAPIView):
     pagination_class = StandardPagination
     
     def get_queryset(self):
-        queryset = Post.objects.filter(
-            is_deleted=False,
-            user=self.request.user  
-        ).order_by('-created_at')
+        # ابتدا همه پست‌های غیرحذف شده
+        queryset = Post.objects.filter(is_deleted=False).order_by('-created_at')
         
+        # فیلتر بر اساس user_id اگر داده شده باشد
         user_id = self.request.query_params.get('user_id')
         if user_id:
             queryset = queryset.filter(user_id=user_id)
         
+        # فیلتر بر اساس هشتگ اگر داده شده باشد
         hashtag = self.request.query_params.get('hashtag')
         if hashtag:
             queryset = queryset.filter(post_hashtags__hashtag__name__icontains=hashtag)
@@ -95,6 +133,7 @@ class PostListCreateView(generics.ListCreateAPIView):
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
 
 
 
@@ -132,7 +171,7 @@ class LikeToggleView(GenericAPIView):
     serializer_class = PostIdSerializer
     
     def post(self, request, post_id):
-        #cheake or sel Validate post_id
+        #cheake or sel Validate post_id    
         serializer = self.get_serializer(data={'post_id': post_id})
         serializer.is_valid(raise_exception=True)
         

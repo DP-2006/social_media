@@ -215,18 +215,45 @@ class UnblockUserSerializer(serializers.Serializer):
     )
 
 
+# class ToggleBlockSerializer(serializers.Serializer):
+#     """Serializer for toggle_block action"""
+#     user_id = serializers.UUIDField(  # تغییر به UUIDField
+#         required=True,
+#         help_text="ID of the user to toggle block"
+#     )
+#     reason = serializers.CharField(
+#         max_length=255,
+#         required=False,
+#         allow_blank=True,
+#         help_text="Reason for blocking (only used when blocking)"
+#     )
+
+# class ToggleBlockSerializer(serializers.Serializer):
+#     user_id = serializers.UUIDField(required=False)
+#     blocked_id = serializers.UUIDField(required=False)
+    
+#     def validate(self, data):
+#         user_id = data.get('user_id') or data.get('blocked_id')
+#         if not user_id:
+#             raise serializers.ValidationError("Either user_id or blocked_id is required")
+#         data['user_id'] = user_id
+#         return data
+
+
 class ToggleBlockSerializer(serializers.Serializer):
-    """Serializer for toggle_block action"""
-    user_id = serializers.UUIDField(  # تغییر به UUIDField
-        required=True,
-        help_text="ID of the user to toggle block"
-    )
-    reason = serializers.CharField(
-        max_length=255,
-        required=False,
-        allow_blank=True,
-        help_text="Reason for blocking (only used when blocking)"
-    )
+    user_id = serializers.UUIDField(required=False)
+    blocked_id = serializers.UUIDField(required=False)
+    blockedId = serializers.UUIDField(required=False)  # اضافه کردن برای پشتیبانی از فرمت فرانت‌اند
+    
+    def validate(self, data):
+        # بررسی همه نام‌های ممکن
+        user_id = data.get('user_id') or data.get('blocked_id') or data.get('blockedId')
+        if not user_id:
+            raise serializers.ValidationError("Either user_id, blocked_id, or blockedId is required")
+        data['user_id'] = user_id
+        return data
+
+
 
 
 class CheckBlockSerializer(serializers.Serializer):
