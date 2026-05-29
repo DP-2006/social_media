@@ -1,0 +1,1791 @@
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="fa" dir="rtl">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>ورود | همدل</title>-->
+
+<!--    &lt;!&ndash; Bootstrap 5 RTL &ndash;&gt;-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">-->
+
+<!--    &lt;!&ndash; Persian Nastaliq Fonts &ndash;&gt;-->
+<!--    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap" rel="stylesheet">-->
+<!--    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;500;600;700&display=swap" rel="stylesheet">-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">-->
+
+<!--    <style>-->
+<!--        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }-->
+
+<!--        /* ==================== CSS Variables - Instagram Inspired Palette ==================== */-->
+<!--        :root {-->
+<!--            /* dark theme (modern deep) */-->
+<!--            &#45;&#45;insta-gradient-start: #f09433;-->
+<!--            &#45;&#45;insta-gradient-end: #d62976;-->
+<!--            &#45;&#45;accent-gold: #f1c40f;-->
+<!--            &#45;&#45;accent-soft: #fd1d1d;-->
+<!--            &#45;&#45;deep-bg: #0a0a0a;-->
+<!--            &#45;&#45;surface-dark: #1c1c1e;-->
+<!--            &#45;&#45;card-dark: rgba(28,28,30,0.92);-->
+<!--            &#45;&#45;border-dark: rgba(255,255,255,0.1);-->
+<!--            &#45;&#45;text-dark: #ffffff;-->
+<!--            &#45;&#45;text-muted-dark: rgba(255,255,255,0.65);-->
+<!--            &#45;&#45;input-bg-dark: rgba(255,255,255,0.07);-->
+<!--            &#45;&#45;divider-bg-dark: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);-->
+<!--            &#45;&#45;arch-color-dark: rgba(240,148,51,0.2);-->
+<!--        }-->
+
+<!--        body.light {-->
+<!--            /* light mode – clean instagram white + subtle warm gradient accent */-->
+<!--            &#45;&#45;insta-gradient-start: #833ab4;-->
+<!--            &#45;&#45;insta-gradient-end: #fd1d1d;-->
+<!--            &#45;&#45;accent-gold: #c13584;-->
+<!--            &#45;&#45;accent-soft: #e4405f;-->
+<!--            &#45;&#45;deep-bg: #fafafa;-->
+<!--            &#45;&#45;surface-dark: #ffffff;-->
+<!--            &#45;&#45;card-dark: rgba(255,255,255,0.96);-->
+<!--            &#45;&#45;border-dark: rgba(0,0,0,0.09);-->
+<!--            &#45;&#45;text-dark: #262626;-->
+<!--            &#45;&#45;text-muted-dark: #8e8e8e;-->
+<!--            &#45;&#45;input-bg-dark: rgba(0,0,0,0.02);-->
+<!--            &#45;&#45;divider-bg-dark: linear-gradient(90deg, transparent, rgba(0,0,0,0.12), transparent);-->
+<!--            &#45;&#45;arch-color-dark: rgba(131,58,180,0.12);-->
+<!--        }-->
+
+<!--        body {-->
+<!--            font-family: 'Noto Nastaliq Urdu', 'Scheherazade New', 'Amiri Quran', serif;-->
+<!--            background: var(&#45;&#45;deep-bg);-->
+<!--            min-height: 100vh;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            position: relative;-->
+<!--            transition: background 0.3s ease, color 0.2s;-->
+<!--            overflow-x: hidden;-->
+<!--        }-->
+
+<!--        /* ==================== PERSIAN MINIATURE ANIMATION BACKGROUND (Farshchian Style) ==================== */-->
+<!--        .persian-art-bg {-->
+<!--            position: fixed;-->
+<!--            inset: 0;-->
+<!--            pointer-events: none;-->
+<!--            z-index: 0;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        /* Animated Persian Miniature Elements */-->
+<!--        .miniature-bird {-->
+<!--            position: absolute;-->
+<!--            font-size: 2rem;-->
+<!--            filter: drop-shadow(0 0 5px rgba(0,0,0,0.2));-->
+<!--            animation: flyBird 20s linear infinite;-->
+<!--            opacity: 0.35;-->
+<!--        }-->
+
+<!--        @keyframes flyBird {-->
+<!--            0% { transform: translateX(-10%) translateY(10%) rotate(-10deg); opacity: 0; }-->
+<!--            10% { opacity: 0.5; }-->
+<!--            90% { opacity: 0.4; }-->
+<!--            100% { transform: translateX(110%) translateY(-20%) rotate(10deg); opacity: 0; }-->
+<!--        }-->
+
+<!--        .floating-flower {-->
+<!--            position: absolute;-->
+<!--            font-size: 1.5rem;-->
+<!--            animation: floatFlower 8s ease-in-out infinite;-->
+<!--            opacity: 0.25;-->
+<!--        }-->
+
+<!--        @keyframes floatFlower {-->
+<!--            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }-->
+<!--            50% { transform: translateY(-20px) rotate(10deg); opacity: 0.45; }-->
+<!--        }-->
+
+<!--        .simorgh {-->
+<!--            position: absolute;-->
+<!--            font-size: 4rem;-->
+<!--            animation: simorghGlide 30s ease-in-out infinite;-->
+<!--            opacity: 0.1;-->
+<!--            filter: drop-shadow(0 0 8px rgba(0,0,0,0.2));-->
+<!--        }-->
+
+<!--        @keyframes simorghGlide {-->
+<!--            0% { transform: translateX(-5%) translateY(20%) scale(0.8); opacity: 0; }-->
+<!--            20% { opacity: 0.15; }-->
+<!--            80% { opacity: 0.15; }-->
+<!--            100% { transform: translateX(105%) translateY(-10%) scale(1.2); opacity: 0; }-->
+<!--        }-->
+
+<!--        .persian-cloud {-->
+<!--            position: absolute;-->
+<!--            background: radial-gradient(ellipse, rgba(255,255,255,0.15) 0%, transparent 70%);-->
+<!--            border-radius: 50%;-->
+<!--            animation: cloudDrift 25s linear infinite;-->
+<!--            opacity: 0.2;-->
+<!--        }-->
+
+<!--        @keyframes cloudDrift {-->
+<!--            from { transform: translateX(-20%); }-->
+<!--            to { transform: translateX(120%); }-->
+<!--        }-->
+
+<!--        .nightingale {-->
+<!--            position: absolute;-->
+<!--            font-size: 1.8rem;-->
+<!--            animation: nightingaleDance 12s ease-in-out infinite;-->
+<!--            opacity: 0.3;-->
+<!--        }-->
+
+<!--        @keyframes nightingaleDance {-->
+<!--            0%, 100% { transform: translate(0, 0) rotate(-5deg); }-->
+<!--            25% { transform: translate(30px, -15px) rotate(5deg); }-->
+<!--            50% { transform: translate(60px, -5px) rotate(-3deg); }-->
+<!--            75% { transform: translate(30px, 10px) rotate(3deg); }-->
+<!--        }-->
+
+<!--        .cypress {-->
+<!--            position: absolute;-->
+<!--            font-size: 3rem;-->
+<!--            animation: cypressSway 6s ease-in-out infinite;-->
+<!--            opacity: 0.15;-->
+<!--            transform-origin: bottom center;-->
+<!--        }-->
+
+<!--        @keyframes cypressSway {-->
+<!--            0%, 100% { transform: rotate(0deg); }-->
+<!--            50% { transform: rotate(3deg); }-->
+<!--        }-->
+
+<!--        .landscape-wave {-->
+<!--            position: absolute;-->
+<!--            bottom: 0;-->
+<!--            left: 0;-->
+<!--            right: 0;-->
+<!--            height: 70px;-->
+<!--            background: repeating-linear-gradient(-->
+<!--                90deg,-->
+<!--                transparent,-->
+<!--                transparent 30px,-->
+<!--                rgba(240,148,51,0.2) 30px,-->
+<!--                rgba(240,148,51,0.2) 32px-->
+<!--            );-->
+<!--            opacity: 0.2;-->
+<!--            animation: waveMove 8s linear infinite;-->
+<!--        }-->
+
+<!--        @keyframes waveMove {-->
+<!--            from { background-position: 0 0; }-->
+<!--            to { background-position: 100px 0; }-->
+<!--        }-->
+
+<!--        .animated-eslimi {-->
+<!--            position: absolute;-->
+<!--            top: 0;-->
+<!--            left: 0;-->
+<!--            right: 0;-->
+<!--            height: 100%;-->
+<!--            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'%3E%3Cpath fill='none' stroke='%23f09433' stroke-width='0.6' d='M10 50 Q30 20 50 50 Q70 80 90 50 Q110 20 130 50 Q150 80 170 50 Q190 20 200 50' opacity='0.2'/%3E%3C/svg%3E");-->
+<!--            background-repeat: repeat-x;-->
+<!--            background-size: 200px 100px;-->
+<!--            animation: slideEslimi 20s linear infinite;-->
+<!--            pointer-events: none;-->
+<!--            opacity: 0.15;-->
+<!--        }-->
+
+<!--        @keyframes slideEslimi {-->
+<!--            from { background-position: 0 0; }-->
+<!--            to { background-position: 200px 0; }-->
+<!--        }-->
+
+<!--        /* ==================== Traditional Persian Architecture ==================== */-->
+<!--        .persian-architecture {-->
+<!--            position: fixed;-->
+<!--            inset: 0;-->
+<!--            pointer-events: none;-->
+<!--            z-index: 0;-->
+<!--        }-->
+
+<!--        .iwan-arch {-->
+<!--            position: absolute;-->
+<!--            top: 0;-->
+<!--            left: 50%;-->
+<!--            transform: translateX(-50%);-->
+<!--            width: 90%;-->
+<!--            max-width: 1000px;-->
+<!--            height: 350px;-->
+<!--            border-bottom-left-radius: 50% 30%;-->
+<!--            border-bottom-right-radius: 50% 30%;-->
+<!--            background: linear-gradient(180deg, var(&#45;&#45;arch-color-dark) 0%, transparent 70%);-->
+<!--            border: 1px solid var(&#45;&#45;border-dark);-->
+<!--            border-top: none;-->
+<!--            opacity: 0.35;-->
+<!--        }-->
+
+<!--        .muqarnas {-->
+<!--            position: absolute;-->
+<!--            top: 0;-->
+<!--            left: 50%;-->
+<!--            transform: translateX(-50%);-->
+<!--            width: 100%;-->
+<!--            max-width: 800px;-->
+<!--            height: 110px;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        .muqarnas-row {-->
+<!--            display: flex;-->
+<!--            justify-content: center;-->
+<!--            gap: 2px;-->
+<!--        }-->
+
+<!--        .muqarnas-cell {-->
+<!--            width: 38px;-->
+<!--            height: 28px;-->
+<!--            background: linear-gradient(135deg, rgba(240,148,51,0.2), transparent);-->
+<!--            border-radius: 0 0 12px 12px;-->
+<!--            border: 0.5px solid var(&#45;&#45;border-dark);-->
+<!--        }-->
+
+<!--        .persian-column {-->
+<!--            position: absolute;-->
+<!--            top: 50%;-->
+<!--            transform: translateY(-50%);-->
+<!--            width: 70px;-->
+<!--            height: 280px;-->
+<!--            background: repeating-linear-gradient(-->
+<!--                90deg,-->
+<!--                transparent,-->
+<!--                transparent 10px,-->
+<!--                var(&#45;&#45;border-dark) 10px,-->
+<!--                var(&#45;&#45;border-dark) 12px-->
+<!--            );-->
+<!--            opacity: 0.25;-->
+<!--        }-->
+<!--        .column-left { left: 20px; border-left: 2px solid rgba(240,148,51,0.25); }-->
+<!--        .column-right { right: 20px; border-right: 2px solid rgba(240,148,51,0.25); }-->
+
+<!--        .tile-pattern {-->
+<!--            position: absolute;-->
+<!--            bottom: 0;-->
+<!--            left: 0;-->
+<!--            right: 0;-->
+<!--            height: 140px;-->
+<!--            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='none' stroke='%23f09433' stroke-width='0.4' d='M50 5 L95 27.5 L95 72.5 L50 95 L5 72.5 L5 27.5 Z' opacity='0.25'/%3E%3Cpath fill='none' stroke='%23f77737' stroke-width='0.3' d='M50 20 L80 35 L80 65 L50 80 L20 65 L20 35 Z' opacity='0.3'/%3E%3C/svg%3E");-->
+<!--            background-repeat: repeat;-->
+<!--            background-size: 60px;-->
+<!--            opacity: 0.1;-->
+<!--        }-->
+
+<!--        /* ==================== Theme Toggle ==================== */-->
+<!--        .theme-toggle {-->
+<!--            position: fixed;-->
+<!--            top: 25px;-->
+<!--            left: 25px;-->
+<!--            z-index: 1000;-->
+<!--            width: 50px;-->
+<!--            height: 50px;-->
+<!--            border-radius: 30px;-->
+<!--            background: var(&#45;&#45;card-dark);-->
+<!--            border: 1px solid var(&#45;&#45;border-dark);-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            cursor: pointer;-->
+<!--            transition: all 0.3s;-->
+<!--            backdrop-filter: blur(10px);-->
+<!--            box-shadow: 0 4px 15px rgba(0,0,0,0.08);-->
+<!--        }-->
+<!--        .theme-toggle:hover {-->
+<!--            transform: scale(1.08);-->
+<!--            border-color: var(&#45;&#45;insta-gradient-start);-->
+<!--        }-->
+<!--        .theme-toggle i {-->
+<!--            font-size: 1.4rem;-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;insta-gradient-start), var(&#45;&#45;insta-gradient-end));-->
+<!--            -webkit-background-clip: text;-->
+<!--            background-clip: text;-->
+<!--            color: transparent;-->
+<!--        }-->
+<!--        body.light .theme-toggle i.fa-moon { display: block; background: linear-gradient(135deg, #833ab4, #fd1d1d); -webkit-background-clip: text; background-clip: text; color: transparent; }-->
+<!--        body.light .theme-toggle i.fa-sun { display: none; }-->
+<!--        body:not(.light) .theme-toggle i.fa-moon { display: none; }-->
+<!--        body:not(.light) .theme-toggle i.fa-sun { display: block; background: linear-gradient(135deg, #f09433, #d62976); -webkit-background-clip: text; background-clip: text; color: transparent; }-->
+
+<!--        /* ==================== Main Card ==================== */-->
+<!--        .auth-card {-->
+<!--            background: var(&#45;&#45;card-dark);-->
+<!--            border: 1px solid var(&#45;&#45;border-dark);-->
+<!--            border-radius: 32px;-->
+<!--            backdrop-filter: blur(12px);-->
+<!--            transition: all 0.3s;-->
+<!--            position: relative;-->
+<!--            z-index: 10;-->
+<!--            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.2);-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        .card-arch {-->
+<!--            width: 100%;-->
+<!--            height: 50px;-->
+<!--            background: linear-gradient(180deg, rgba(240,148,51,0.15) 0%, transparent 100%);-->
+<!--            border-bottom: 1px solid var(&#45;&#45;border-dark);-->
+<!--            position: relative;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+<!--        .card-arch::before {-->
+<!--            content: '';-->
+<!--            position: absolute;-->
+<!--            bottom: 0;-->
+<!--            left: 50%;-->
+<!--            transform: translateX(-50%);-->
+<!--            width: 130px;-->
+<!--            height: 40px;-->
+<!--            border-radius: 0 0 50% 50%;-->
+<!--            border: 1px solid var(&#45;&#45;border-dark);-->
+<!--            border-top: none;-->
+<!--        }-->
+
+<!--        .brand-name {-->
+<!--            font-family: 'Noto Nastaliq Urdu', 'Scheherazade New', serif;-->
+<!--            font-weight: 700;-->
+<!--            font-size: 3.5rem;-->
+<!--             line-height: 2.2;        /* مقدار پیش‌فرض را به 1.8 یا بالاتر افزایش دهید */-->
+<!--    margin-bottom: 0.5rem;   /* حتما یک مقدار margin-bottom اضافه کنید */-->
+<!--    display: inline-block;    /* به کنترل بهتر فضای دور متن کمک می‌کند */-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;insta-gradient-start), var(&#45;&#45;insta-gradient-end));-->
+<!--            -webkit-background-clip: text;-->
+<!--            background-clip: text;-->
+<!--            color: transparent;-->
+
+<!--            letter-spacing: 1px;-->
+<!--        }-->
+
+<!--        /* brand-subtitle removed - hidden completely */-->
+<!--        .brand-subtitle {-->
+<!--            display: none;-->
+<!--        }-->
+
+<!--        .form-label, label, .input-hint, .auth-footer, .timer, .back-btn, #resendBtn {-->
+<!--            font-family: 'Noto Nastaliq Urdu', 'Scheherazade New', serif;-->
+<!--        }-->
+
+<!--        .form-label {-->
+<!--            color: var(&#45;&#45;text-dark);-->
+<!--            font-weight: 600;-->
+<!--            font-size: 1rem;-->
+<!--            margin-bottom: 8px;-->
+<!--        }-->
+
+<!--        .auth-input {-->
+<!--            background: var(&#45;&#45;input-bg-dark);-->
+<!--            border: 1px solid var(&#45;&#45;border-dark);-->
+<!--            border-radius: 20px;-->
+<!--            padding: 12px 18px;-->
+<!--            color: var(&#45;&#45;text-dark);-->
+<!--            font-family: 'Noto Nastaliq Urdu', serif;-->
+<!--            font-size: 1rem;-->
+<!--            transition: all 0.2s;-->
+<!--        }-->
+<!--        .auth-input:focus {-->
+<!--            border-color: var(&#45;&#45;insta-gradient-start);-->
+<!--            box-shadow: 0 0 0 3px rgba(240,148,51,0.2);-->
+<!--            background: var(&#45;&#45;input-bg-dark);-->
+<!--            color: var(&#45;&#45;text-dark);-->
+<!--        }-->
+<!--        .auth-input::placeholder {-->
+<!--            font-family: 'Noto Nastaliq Urdu', serif;-->
+<!--            color: var(&#45;&#45;text-muted-dark);-->
+<!--        }-->
+
+<!--        .btn-luxury {-->
+<!--            background: linear-gradient(45deg, var(&#45;&#45;insta-gradient-start), var(&#45;&#45;insta-gradient-end));-->
+<!--            border: none;-->
+<!--            border-radius: 40px;-->
+<!--            padding: 12px;-->
+<!--            color: white;-->
+<!--            font-family: 'Noto Nastaliq Urdu', serif;-->
+<!--            font-weight: 600;-->
+<!--            font-size: 1rem;-->
+<!--            transition: all 0.25s;-->
+<!--            box-shadow: 0 4px 12px rgba(0,0,0,0.1);-->
+<!--        }-->
+<!--        .btn-luxury:hover {-->
+<!--            transform: translateY(-2px);-->
+<!--            filter: brightness(1.02);-->
+<!--            box-shadow: 0 8px 20px rgba(0,0,0,0.15);-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        .otp-input {-->
+<!--            width: 55px;-->
+<!--            height: 60px;-->
+<!--            text-align: center;-->
+<!--            font-size: 1.6rem;-->
+<!--            font-weight: bold;-->
+<!--            background: var(&#45;&#45;input-bg-dark);-->
+<!--            border: 2px solid var(&#45;&#45;border-dark);-->
+<!--            border-radius: 20px;-->
+<!--            color: var(&#45;&#45;text-dark);-->
+<!--            font-family: 'Noto Nastaliq Urdu', monospace;-->
+<!--            transition: all 0.2s;-->
+<!--        }-->
+<!--        .otp-input:focus {-->
+<!--            border-color: var(&#45;&#45;insta-gradient-start);-->
+<!--            box-shadow: 0 0 0 3px rgba(240,148,51,0.2);-->
+<!--            outline: none;-->
+<!--        }-->
+
+<!--        .divider-custom {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            text-align: center;-->
+<!--        }-->
+<!--        .divider-custom::before,-->
+<!--        .divider-custom::after {-->
+<!--            content: '';-->
+<!--            flex: 1;-->
+<!--            border-bottom: 1px solid var(&#45;&#45;border-dark);-->
+<!--        }-->
+<!--        .divider-custom span {-->
+<!--            padding: 0 15px;-->
+<!--            color: var(&#45;&#45;accent-gold);-->
+<!--            font-family: 'Noto Nastaliq Urdu', serif;-->
+<!--            font-size: 1.1rem;-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;insta-gradient-start), var(&#45;&#45;insta-gradient-end));-->
+<!--            -webkit-background-clip: text;-->
+<!--            background-clip: text;-->
+<!--            color: transparent;-->
+<!--        }-->
+
+<!--        .timer-text {-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;insta-gradient-start), var(&#45;&#45;insta-gradient-end));-->
+<!--            -webkit-background-clip: text;-->
+<!--            background-clip: text;-->
+<!--            color: transparent;-->
+<!--            font-weight: 700;-->
+<!--        }-->
+
+<!--        .back-btn {-->
+<!--            background: none;-->
+<!--            border: none;-->
+<!--            color: var(&#45;&#45;text-muted-dark);-->
+<!--            transition: all 0.2s;-->
+<!--            font-size: 0.9rem;-->
+<!--        }-->
+<!--        .back-btn:hover { color: var(&#45;&#45;insta-gradient-start); }-->
+
+<!--        .footer-link {-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;insta-gradient-start), var(&#45;&#45;insta-gradient-end));-->
+<!--            -webkit-background-clip: text;-->
+<!--            background-clip: text;-->
+<!--            color: transparent;-->
+<!--            text-decoration: none;-->
+<!--            font-weight: 700;-->
+<!--        }-->
+<!--        .footer-link:hover { text-decoration: underline; opacity: 0.9; }-->
+
+<!--        .hidden { display: none !important; }-->
+
+<!--        .shake {-->
+<!--            animation: shakeAnim 0.3s ease-in-out;-->
+<!--        }-->
+<!--        @keyframes shakeAnim {-->
+<!--            0%,100%{transform:translateX(0)}-->
+<!--            25%{transform:translateX(-6px)}-->
+<!--            75%{transform:translateX(6px)}-->
+<!--        }-->
+
+<!--        .toast-custom {-->
+<!--            position: fixed;-->
+<!--            bottom: 30px;-->
+<!--            left: 50%;-->
+<!--            transform: translateX(-50%) translateY(20px);-->
+<!--            background: var(&#45;&#45;card-dark);-->
+<!--            backdrop-filter: blur(12px);-->
+<!--            border: 1px solid var(&#45;&#45;border-dark);-->
+<!--            border-radius: 60px;-->
+<!--            padding: 12px 24px;-->
+<!--            color: var(&#45;&#45;text-dark);-->
+<!--            font-family: 'Noto Nastaliq Urdu', serif;-->
+<!--            z-index: 2000;-->
+<!--            opacity: 0;-->
+<!--            transition: all 0.3s;-->
+<!--            pointer-events: none;-->
+<!--            white-space: nowrap;-->
+<!--            box-shadow: 0 6px 14px rgba(0,0,0,0.1);-->
+<!--        }-->
+<!--        .toast-custom.show {-->
+<!--            opacity: 1;-->
+<!--            transform: translateX(-50%) translateY(0);-->
+<!--        }-->
+
+<!--        @media (max-width: 576px) {-->
+<!--            .otp-input { width: 45px; height: 50px; font-size: 1.3rem; }-->
+<!--            .brand-name { font-size: 2.5rem; }-->
+<!--            .persian-column { display: none; }-->
+<!--            .simorgh { font-size: 2.5rem; }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--&lt;!&ndash; Theme Toggle &ndash;&gt;-->
+<!--<div class="theme-toggle" id="themeToggle">-->
+<!--    <i class="fas fa-sun"></i>-->
+<!--    <i class="fas fa-moon"></i>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Persian Miniature Art Background (تزئینات نگارگری) &ndash;&gt;-->
+<!--<div class="persian-art-bg">-->
+<!--    <div class="miniature-bird" style="top: 15%; left: -10%; animation-duration: 18s;">🕊️</div>-->
+<!--    <div class="miniature-bird" style="top: 35%; left: -5%; animation-duration: 22s; animation-delay: 3s;">🐦</div>-->
+<!--    <div class="miniature-bird" style="top: 55%; left: -15%; animation-duration: 25s; animation-delay: 6s;">🦜</div>-->
+<!--    <div class="simorgh" style="top: 20%; left: -20%; animation-duration: 35s;">🦅✨</div>-->
+<!--    <div class="simorgh" style="top: 65%; left: -30%; animation-duration: 40s; animation-delay: 8s;">🐉🌿</div>-->
+<!--    <div class="floating-flower" style="top: 10%; right: 5%; animation-duration: 7s;">🌹</div>-->
+<!--    <div class="floating-flower" style="top: 45%; right: 15%; animation-duration: 9s; animation-delay: 2s;">🌷</div>-->
+<!--    <div class="floating-flower" style="top: 75%; right: 8%; animation-duration: 8s; animation-delay: 4s;">🌸</div>-->
+<!--    <div class="floating-flower" style="top: 20%; left: 10%; animation-duration: 6s; animation-delay: 1s;">🌼</div>-->
+<!--    <div class="nightingale" style="top: 30%; right: 20%; animation-duration: 11s;">🐦‍⬛🎵</div>-->
+<!--    <div class="nightingale" style="top: 50%; left: 25%; animation-duration: 13s; animation-delay: 2s;">🐦🎶</div>-->
+<!--    <div class="cypress" style="bottom: 5%; left: 3%; animation-duration: 5s;">🌲</div>-->
+<!--    <div class="cypress" style="bottom: 8%; right: 4%; animation-duration: 6s; animation-delay: 1s;">🌳</div>-->
+<!--    <div class="persian-cloud" style="top: 5%; left: 0; width: 150px; height: 80px; animation-duration: 30s;"></div>-->
+<!--    <div class="persian-cloud" style="top: 12%; left: 30%; width: 120px; height: 60px; animation-duration: 35s; animation-delay: 5s;"></div>-->
+<!--    <div class="landscape-wave"></div>-->
+<!--    <div class="animated-eslimi"></div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Traditional Persian Architecture &ndash;&gt;-->
+<!--<div class="persian-architecture">-->
+<!--    <div class="iwan-arch"></div>-->
+<!--    <div class="muqarnas">-->
+<!--        <div class="muqarnas-row" style="margin-top: 10px;">-->
+<!--            <div class="muqarnas-cell"></div><div class="muqarnas-cell"></div><div class="muqarnas-cell"></div>-->
+<!--            <div class="muqarnas-cell"></div><div class="muqarnas-cell"></div><div class="muqarnas-cell"></div>-->
+<!--            <div class="muqarnas-cell"></div><div class="muqarnas-cell"></div>-->
+<!--        </div>-->
+<!--        <div class="muqarnas-row">-->
+<!--            <div class="muqarnas-cell"></div><div class="muqarnas-cell"></div><div class="muqarnas-cell"></div>-->
+<!--            <div class="muqarnas-cell"></div><div class="muqarnas-cell"></div>-->
+<!--        </div>-->
+<!--        <div class="muqarnas-row">-->
+<!--            <div class="muqarnas-cell"></div><div class="muqarnas-cell"></div><div class="muqarnas-cell"></div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="persian-column column-left"></div>-->
+<!--    <div class="persian-column column-right"></div>-->
+<!--    <div class="tile-pattern"></div>-->
+<!--</div>-->
+
+<!--<div class="container my-4" style="max-width: 480px; position: relative; z-index: 10;">-->
+<!--    <div class="auth-card p-4 p-md-5">-->
+
+<!--        <div class="card-arch mb-2 pb-4"></div>-->
+
+<!--        &lt;!&ndash; Brand Section - بدون ستاره و بدون زیرنویس &ndash;&gt;-->
+<!--        <div class="text-center mb-4">-->
+
+<!--            <h1 class="brand-name mb-5">همدل</h1>-->
+<!--            &lt;!&ndash; حذف کامل عبارت شبکه اجتماعی اصیل &ndash;&gt;-->
+
+<!--        </div>-->
+
+<!--        <div class="divider-custom mb-3">-->
+<!--            <span>✦</span>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Step 1: Phone &ndash;&gt;-->
+<!--        <div id="step1">-->
+<!--            <div class="mb-4">-->
+<!--                <label class="form-label"><i class="fas fa-mobile-alt"></i> شماره همراه</label>-->
+<!--                <input type="tel" id="phone" class="form-control auth-input" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" autocomplete="off">-->
+<!--                <div class="form-text text-muted small mt-2" style="font-family: 'Noto Nastaliq Urdu', serif;">کد تأیید به این شماره ارسال خواهد شد</div>-->
+<!--            </div>-->
+<!--            <button id="sendBtn" class="btn btn-luxury w-100">-->
+<!--                <i class="fas fa-paper-plane ms-2"></i> ارسال کد تایید-->
+<!--            </button>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Step 2: OTP &ndash;&gt;-->
+<!--        <div id="step2" class="hidden">-->
+<!--            <div class="text-center mb-4">-->
+<!--                <div class="mb-2">-->
+<!--                    <svg width="50" height="50" viewBox="0 0 80 80">-->
+<!--                        <text x="40" y="48" text-anchor="middle" font-size="26" fill="url(#gradLight)" font-family="serif">❁</text>-->
+<!--                        <defs><linearGradient id="gradLight" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="var(&#45;&#45;insta-gradient-start)"/><stop offset="100%" stop-color="var(&#45;&#45;insta-gradient-end)"/></linearGradient></defs>-->
+<!--                    </svg>-->
+<!--                </div>-->
+<!--                <p class="text-muted small mb-1" style="font-family: 'Noto Nastaliq Urdu', serif;">کد تأیید برای شماره</p>-->
+<!--                <p class="fw-bold" id="phone-display" style="background: linear-gradient(135deg, var(&#45;&#45;insta-gradient-start), var(&#45;&#45;insta-gradient-end)); -webkit-background-clip: text; background-clip: text; color: transparent; font-family: 'Noto Nastaliq Urdu', serif;"></p>-->
+<!--            </div>-->
+
+<!--            <div class="mb-4">-->
+<!--                <label class="form-label text-center d-block mb-3"><i class="fas fa-key"></i> کد ۶ رقمی را وارد کنید</label>-->
+<!--                <div class="d-flex justify-content-center gap-2 gap-sm-3">-->
+<!--                    <input type="text" maxlength="1" class="otp-input text-center" data-idx="0">-->
+<!--                    <input type="text" maxlength="1" class="otp-input text-center" data-idx="1">-->
+<!--                    <input type="text" maxlength="1" class="otp-input text-center" data-idx="2">-->
+<!--                    <input type="text" maxlength="1" class="otp-input text-center" data-idx="3">-->
+<!--                    <input type="text" maxlength="1" class="otp-input text-center" data-idx="4">-->
+<!--                    <input type="text" maxlength="1" class="otp-input text-center" data-idx="5">-->
+<!--                </div>-->
+<!--                <input type="hidden" id="otp-value">-->
+<!--            </div>-->
+
+<!--            <button id="verifyBtn" class="btn btn-luxury w-100 mb-3">-->
+<!--                <i class="fas fa-sign-in-alt ms-2"></i> ورود به همدل-->
+<!--            </button>-->
+
+<!--            <div class="d-flex justify-content-between align-items-center mt-2">-->
+<!--                <div class="small text-muted" style="font-family: 'Noto Nastaliq Urdu', serif;">-->
+<!--                    <i class="fas fa-clock"></i>-->
+<!--                    <span id="timer-text" class="timer-text me-1">۰۲:۰۰</span>-->
+<!--                </div>-->
+<!--                <button id="resendBtn" class="btn btn-link p-0 hidden" style="font-family: 'Noto Nastaliq Urdu', serif; color: var(&#45;&#45;insta-gradient-start);">ارسال مجدد کد</button>-->
+<!--            </div>-->
+
+<!--            <button id="backBtn" class="back-btn w-100 mt-3 py-2">-->
+<!--                <i class="fas fa-arrow-right ms-1"></i> بازگشت-->
+<!--            </button>-->
+<!--        </div>-->
+
+<!--        <div class="divider-custom my-4">-->
+<!--            <span>✧</span>-->
+<!--        </div>-->
+
+<!--        <div class="text-center">-->
+<!--            <small class="text-muted" style="font-family: 'Noto Nastaliq Urdu', serif;">قدمی به همدل بگذار...</small><br>-->
+<!--            <a href="#" id="registerHint" class="footer-link">هم‌دل ما شو</a>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    const API_BASE = 'http://127.0.0.1:8000/api';-->
+<!--    let currentPhone = '';-->
+<!--    let timerInterval = null;-->
+
+<!--    function initTheme() {-->
+<!--        const savedTheme = localStorage.getItem('hamdel_theme');-->
+<!--        if (savedTheme === 'light') {-->
+<!--            document.body.classList.add('light');-->
+<!--        } else {-->
+<!--            document.body.classList.remove('light');-->
+<!--            localStorage.setItem('hamdel_theme', 'dark');-->
+<!--        }-->
+<!--    }-->
+
+<!--    function toggleTheme() {-->
+<!--        if (document.body.classList.contains('light')) {-->
+<!--            document.body.classList.remove('light');-->
+<!--            localStorage.setItem('hamdel_theme', 'dark');-->
+<!--        } else {-->
+<!--            document.body.classList.add('light');-->
+<!--            localStorage.setItem('hamdel_theme', 'light');-->
+<!--        }-->
+<!--    }-->
+
+<!--    function showToast(msg, type) {-->
+<!--        const toast = document.createElement('div');-->
+<!--        toast.className = 'toast-custom';-->
+<!--        toast.textContent = msg;-->
+<!--        if (type === 'error') toast.style.borderLeft = '4px solid #fd1d1d';-->
+<!--        if (type === 'success') toast.style.borderLeft = '4px solid #4caf50';-->
+<!--        document.body.appendChild(toast);-->
+<!--        setTimeout(() => toast.classList.add('show'), 10);-->
+<!--        setTimeout(() => {-->
+<!--            toast.classList.remove('show');-->
+<!--            setTimeout(() => toast.remove(), 300);-->
+<!--        }, 2700);-->
+<!--    }-->
+
+<!--    const otpInputs = document.querySelectorAll('.otp-input');-->
+
+<!--    function updateOtpValue() {-->
+<!--        let otp = '';-->
+<!--        otpInputs.forEach(input => { otp += input.value; });-->
+<!--        document.getElementById('otp-value').value = otp;-->
+<!--    }-->
+
+<!--    otpInputs.forEach((input, idx) => {-->
+<!--        input.addEventListener('input', (e) => {-->
+<!--            if (e.target.value.length === 1 && idx < 5) otpInputs[idx + 1].focus();-->
+<!--            updateOtpValue();-->
+<!--        });-->
+<!--        input.addEventListener('keydown', (e) => {-->
+<!--            if (e.key === 'Backspace' && !e.target.value && idx > 0) otpInputs[idx - 1].focus();-->
+<!--        });-->
+<!--        input.addEventListener('paste', (e) => {-->
+<!--            e.preventDefault();-->
+<!--            const paste = (e.clipboardData || window.clipboardData).getData('text');-->
+<!--            if (paste && paste.length === 6 && /^\d+$/.test(paste)) {-->
+<!--                paste.split('').forEach((char, i) => { if (otpInputs[i]) otpInputs[i].value = char; });-->
+<!--                updateOtpValue();-->
+<!--                otpInputs[5].focus();-->
+<!--                handleVerifyOTP();-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+
+<!--    async function handleSendOTP() {-->
+<!--        const phone = document.getElementById('phone').value.trim();-->
+<!--        if (!phone || phone.length < 11) {-->
+<!--            showToast('لطفاً شماره موبایل معتبر وارد کنید', 'error');-->
+<!--            document.getElementById('phone').classList.add('shake');-->
+<!--            setTimeout(() => document.getElementById('phone').classList.remove('shake'), 300);-->
+<!--            return;-->
+<!--        }-->
+
+<!--        const btn = document.getElementById('sendBtn');-->
+<!--        btn.disabled = true;-->
+<!--        btn.innerHTML = '<i class="fas fa-spinner fa-spin ms-2"></i> در حال ارسال...';-->
+
+<!--        try {-->
+<!--            const response = await fetch(`${API_BASE}/accounts/login/send-otp/`, {-->
+<!--                method: 'POST',-->
+<!--                headers: { 'Content-Type': 'application/json' },-->
+<!--                body: JSON.stringify({ phone: phone })-->
+<!--            });-->
+<!--            const result = await response.json();-->
+
+<!--            if (result.success) {-->
+<!--                currentPhone = phone;-->
+<!--                showToast('کد تایید ارسال شد', 'success');-->
+<!--                if (result.otp) showToast('کد تست: ' + result.otp, 'info');-->
+<!--                if (result.code_for_test) showToast('کد تست: ' + result.code_for_test, 'info');-->
+
+<!--                document.getElementById('phone-display').textContent = phone;-->
+<!--                document.getElementById('step1').classList.add('hidden');-->
+<!--                document.getElementById('step2').classList.remove('hidden');-->
+<!--                startTimer(120);-->
+<!--                otpInputs[0].focus();-->
+<!--            } else {-->
+<!--                showToast(result.message || 'مشکل در ارسال کد تایید', 'error');-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            showToast('مشکل در ارتباط با سرور', 'error');-->
+<!--        } finally {-->
+<!--            btn.disabled = false;-->
+<!--            btn.innerHTML = '<i class="fas fa-paper-plane ms-2"></i> ارسال کد تایید';-->
+<!--        }-->
+<!--    }-->
+
+<!--    function startTimer(seconds) {-->
+<!--        let remaining = seconds;-->
+<!--        const timerText = document.getElementById('timer-text');-->
+<!--        const resendBtn = document.getElementById('resendBtn');-->
+<!--        if (timerInterval) clearInterval(timerInterval);-->
+<!--        timerInterval = setInterval(() => {-->
+<!--            const mins = Math.floor(remaining / 60);-->
+<!--            const secs = remaining % 60;-->
+<!--            timerText.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;-->
+<!--            if (remaining <= 0) {-->
+<!--                clearInterval(timerInterval);-->
+<!--                timerText.innerHTML = 'منقضی شد';-->
+<!--                resendBtn.classList.remove('hidden');-->
+<!--            }-->
+<!--            remaining&#45;&#45;;-->
+<!--        }, 1000);-->
+<!--    }-->
+
+<!--    async function handleResendOTP() {-->
+<!--        const resendBtn = document.getElementById('resendBtn');-->
+<!--        resendBtn.disabled = true;-->
+<!--        resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';-->
+<!--        try {-->
+<!--            const response = await fetch(`${API_BASE}/accounts/login/send-otp/`, {-->
+<!--                method: 'POST',-->
+<!--                headers: { 'Content-Type': 'application/json' },-->
+<!--                body: JSON.stringify({ phone: currentPhone })-->
+<!--            });-->
+<!--            const result = await response.json();-->
+<!--            if (result.success) {-->
+<!--                startTimer(120);-->
+<!--                resendBtn.classList.add('hidden');-->
+<!--                resendBtn.innerHTML = 'ارسال مجدد';-->
+<!--                showToast('کد مجدد ارسال شد', 'success');-->
+<!--                if (result.otp) showToast('کد تست: ' + result.otp, 'info');-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            showToast('مشکل در ارسال مجدد', 'error');-->
+<!--        } finally {-->
+<!--            resendBtn.disabled = false;-->
+<!--        }-->
+<!--    }-->
+
+<!--    async function handleVerifyOTP() {-->
+<!--        const otp = document.getElementById('otp-value').value;-->
+<!--        if (!otp || otp.length < 6) {-->
+<!--            showToast('لطفاً کد تایید ۶ رقمی را وارد کنید', 'error');-->
+<!--            otpInputs.forEach(input => {-->
+<!--                input.classList.add('shake');-->
+<!--                setTimeout(() => input.classList.remove('shake'), 300);-->
+<!--            });-->
+<!--            return;-->
+<!--        }-->
+
+<!--        const btn = document.getElementById('verifyBtn');-->
+<!--        btn.disabled = true;-->
+<!--        btn.innerHTML = '<i class="fas fa-spinner fa-spin ms-2"></i> در حال ورود...';-->
+
+<!--        try {-->
+<!--            const response = await fetch(`${API_BASE}/accounts/login/verify/`, {-->
+<!--                method: 'POST',-->
+<!--                headers: { 'Content-Type': 'application/json' },-->
+<!--                body: JSON.stringify({ phone: currentPhone, code: otp })-->
+<!--            });-->
+<!--            const result = await response.json();-->
+
+<!--            if (result.access_token || result.access) {-->
+<!--                localStorage.setItem('access_token', result.access_token || result.access);-->
+<!--                localStorage.setItem('refresh_token', result.refresh_token || result.refresh);-->
+<!--                localStorage.setItem('user_id', result.user_id);-->
+<!--                showToast('ورود با موفقیت انجام شد', 'success');-->
+<!--                setTimeout(() => { window.location.href = 'index.html'; }, 1000);-->
+<!--            } else {-->
+<!--                showToast(result.message || 'کد تایید نامعتبر است', 'error');-->
+<!--                btn.disabled = false;-->
+<!--                btn.innerHTML = '<i class="fas fa-sign-in-alt ms-2"></i> ورود به همدل';-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            showToast('مشکل در ارتباط با سرور', 'error');-->
+<!--            btn.disabled = false;-->
+<!--            btn.innerHTML = '<i class="fas fa-sign-in-alt ms-2"></i> ورود به همدل';-->
+<!--        }-->
+<!--    }-->
+
+<!--    function backToLogin() {-->
+<!--        if (timerInterval) clearInterval(timerInterval);-->
+<!--        document.getElementById('step2').classList.add('hidden');-->
+<!--        document.getElementById('step1').classList.remove('hidden');-->
+<!--        document.getElementById('otp-value').value = '';-->
+<!--        otpInputs.forEach(input => input.value = '');-->
+<!--    }-->
+
+<!--    document.getElementById('sendBtn').addEventListener('click', handleSendOTP);-->
+<!--    document.getElementById('verifyBtn').addEventListener('click', handleVerifyOTP);-->
+<!--    document.getElementById('resendBtn').addEventListener('click', handleResendOTP);-->
+<!--    document.getElementById('backBtn').addEventListener('click', backToLogin);-->
+<!--    document.getElementById('themeToggle').addEventListener('click', toggleTheme);-->
+<!--    document.getElementById('registerHint').addEventListener('click', (e) => {-->
+<!--        e.preventDefault();-->
+<!--        showToast('برای ثبت‌نام با شماره موبایل وارد شوید', 'info');-->
+<!--    });-->
+
+<!--    initTheme();-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود | همدل</title>
+
+    <!-- Bootstrap 5 RTL -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+
+    <!-- Persian Nastaliq Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* ==================== CSS Variables - Instagram Inspired Palette ==================== */
+        :root {
+            /* dark theme (modern deep) */
+            --insta-gradient-start: #f09433;
+            --insta-gradient-end: #d62976;
+            --accent-gold: #f1c40f;
+            --accent-soft: #fd1d1d;
+            --deep-bg: #0a0a0a;
+            --surface-dark: #1c1c1e;
+            --card-dark: rgba(28,28,30,0.92);
+            --border-dark: rgba(255,255,255,0.1);
+            --text-dark: #ffffff;
+            --text-muted-dark: rgba(255,255,255,0.65);
+            --input-bg-dark: rgba(255,255,255,0.07);
+            --divider-bg-dark: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            --arch-color-dark: rgba(240,148,51,0.2);
+            --icy-blue: #88f7ff;
+            --icy-blue-glow: rgba(136,247,255,0.3);
+        }
+
+        body.light {
+            /* light mode – clean instagram white + subtle warm gradient accent */
+            --insta-gradient-start: #833ab4;
+            --insta-gradient-end: #fd1d1d;
+            --accent-gold: #c13584;
+            --accent-soft: #e4405f;
+            --deep-bg: #fafafa;
+            --surface-dark: #ffffff;
+            --card-dark: rgba(255,255,255,0.96);
+            --border-dark: rgba(0,0,0,0.09);
+            --text-dark: #262626;
+            --text-muted-dark: #8e8e8e;
+            --input-bg-dark: rgba(0,0,0,0.02);
+            --divider-bg-dark: linear-gradient(90deg, transparent, rgba(0,0,0,0.12), transparent);
+            --arch-color-dark: rgba(131,58,180,0.12);
+            --icy-blue: #0891b2;
+            --icy-blue-glow: rgba(8,145,178,0.15);
+        }
+
+        body {
+            font-family: 'Noto Nastaliq Urdu', 'Scheherazade New', 'Amiri Quran', serif;
+            background: var(--deep-bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: background 0.3s ease, color 0.2s;
+            overflow-x: hidden;
+        }
+
+        /* ==================== PERSIAN MINIATURE ANIMATION BACKGROUND (Farshchian Style) ==================== */
+        .persian-art-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        /* Animated Persian Miniature Elements */
+        .miniature-bird {
+            position: absolute;
+            font-size: 2rem;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.2));
+            animation: flyBird 20s linear infinite;
+            opacity: 0.35;
+        }
+
+        @keyframes flyBird {
+            0% { transform: translateX(-10%) translateY(10%) rotate(-10deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.4; }
+            100% { transform: translateX(110%) translateY(-20%) rotate(10deg); opacity: 0; }
+        }
+
+        .floating-flower {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: floatFlower 8s ease-in-out infinite;
+            opacity: 0.25;
+        }
+
+        @keyframes floatFlower {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
+            50% { transform: translateY(-20px) rotate(10deg); opacity: 0.45; }
+        }
+
+        .simorgh {
+            position: absolute;
+            font-size: 4rem;
+            animation: simorghGlide 30s ease-in-out infinite;
+            opacity: 0.1;
+            filter: drop-shadow(0 0 8px rgba(0,0,0,0.2));
+        }
+
+        @keyframes simorghGlide {
+            0% { transform: translateX(-5%) translateY(20%) scale(0.8); opacity: 0; }
+            20% { opacity: 0.15; }
+            80% { opacity: 0.15; }
+            100% { transform: translateX(105%) translateY(-10%) scale(1.2); opacity: 0; }
+        }
+
+        .persian-cloud {
+            position: absolute;
+            background: radial-gradient(ellipse, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: cloudDrift 25s linear infinite;
+            opacity: 0.2;
+        }
+
+        @keyframes cloudDrift {
+            from { transform: translateX(-20%); }
+            to { transform: translateX(120%); }
+        }
+
+        .nightingale {
+            position: absolute;
+            font-size: 1.8rem;
+            animation: nightingaleDance 12s ease-in-out infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes nightingaleDance {
+            0%, 100% { transform: translate(0, 0) rotate(-5deg); }
+            25% { transform: translate(30px, -15px) rotate(5deg); }
+            50% { transform: translate(60px, -5px) rotate(-3deg); }
+            75% { transform: translate(30px, 10px) rotate(3deg); }
+        }
+
+        .cypress {
+            position: absolute;
+            font-size: 3rem;
+            animation: cypressSway 6s ease-in-out infinite;
+            opacity: 0.15;
+            transform-origin: bottom center;
+        }
+
+        @keyframes cypressSway {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(3deg); }
+        }
+
+        .landscape-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 30px,
+                rgba(240,148,51,0.2) 30px,
+                rgba(240,148,51,0.2) 32px
+            );
+            opacity: 0.2;
+            animation: waveMove 8s linear infinite;
+        }
+
+        @keyframes waveMove {
+            from { background-position: 0 0; }
+            to { background-position: 100px 0; }
+        }
+
+        .animated-eslimi {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'%3E%3Cpath fill='none' stroke='%23f09433' stroke-width='0.6' d='M10 50 Q30 20 50 50 Q70 80 90 50 Q110 20 130 50 Q150 80 170 50 Q190 20 200 50' opacity='0.2'/%3E%3C/svg%3E");
+            background-repeat: repeat-x;
+            background-size: 200px 100px;
+            animation: slideEslimi 20s linear infinite;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
+        @keyframes slideEslimi {
+            from { background-position: 0 0; }
+            to { background-position: 200px 0; }
+        }
+
+        /* ==================== Traditional Persian Architecture ==================== */
+        .persian-architecture {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .iwan-arch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1000px;
+            height: 350px;
+            border-bottom-left-radius: 50% 30%;
+            border-bottom-right-radius: 50% 30%;
+            background: linear-gradient(180deg, var(--arch-color-dark) 0%, transparent 70%);
+            border: 1px solid var(--border-dark);
+            border-top: none;
+            opacity: 0.35;
+        }
+
+        .muqarnas {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 800px;
+            height: 110px;
+            overflow: hidden;
+        }
+
+        .muqarnas-row {
+            display: flex;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .muqarnas-cell {
+            width: 38px;
+            height: 28px;
+            background: linear-gradient(135deg, rgba(240,148,51,0.2), transparent);
+            border-radius: 0 0 12px 12px;
+            border: 0.5px solid var(--border-dark);
+        }
+
+        .persian-column {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            height: 280px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 10px,
+                var(--border-dark) 10px,
+                var(--border-dark) 12px
+            );
+            opacity: 0.25;
+        }
+        .column-left { left: 20px; border-left: 2px solid rgba(240,148,51,0.25); }
+        .column-right { right: 20px; border-right: 2px solid rgba(240,148,51,0.25); }
+
+        .tile-pattern {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 140px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='none' stroke='%23f09433' stroke-width='0.4' d='M50 5 L95 27.5 L95 72.5 L50 95 L5 72.5 L5 27.5 Z' opacity='0.25'/%3E%3Cpath fill='none' stroke='%23f77737' stroke-width='0.3' d='M50 20 L80 35 L80 65 L50 80 L20 65 L20 35 Z' opacity='0.3'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 60px;
+            opacity: 0.1;
+        }
+
+        /* ==================== Theme Toggle ==================== */
+        .theme-toggle {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            z-index: 1000;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            background: var(--card-dark);
+            border: 1px solid var(--border-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .theme-toggle:hover {
+            transform: scale(1.08);
+            border-color: var(--insta-gradient-start);
+        }
+        .theme-toggle i {
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, var(--insta-gradient-start), var(--insta-gradient-end));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        body.light .theme-toggle i.fa-moon { display: block; background: linear-gradient(135deg, #833ab4, #fd1d1d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        body.light .theme-toggle i.fa-sun { display: none; }
+        body:not(.light) .theme-toggle i.fa-moon { display: none; }
+        body:not(.light) .theme-toggle i.fa-sun { display: block; background: linear-gradient(135deg, #f09433, #d62976); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+        /* ==================== Main Card ==================== */
+        .auth-card {
+            background: var(--card-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 32px;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .card-arch {
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(180deg, rgba(240,148,51,0.15) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border-dark);
+            position: relative;
+            overflow: hidden;
+        }
+        .card-arch::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130px;
+            height: 40px;
+            border-radius: 0 0 50% 50%;
+            border: 1px solid var(--border-dark);
+            border-top: none;
+        }
+
+        .brand-name {
+            font-family: 'Noto Nastaliq Urdu', 'Scheherazade New', serif;
+            font-weight: 700;
+            font-size: 3.5rem;
+             line-height: 2.2;        /* مقدار پیش‌فرض را به 1.8 یا بالاتر افزایش دهید */
+    margin-bottom: 0.5rem;   /* حتما یک مقدار margin-bottom اضافه کنید */
+    display: inline-block;    /* به کنترل بهتر فضای دور متن کمک می‌کند */
+            background: linear-gradient(135deg, var(--insta-gradient-start), var(--insta-gradient-end));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+
+            letter-spacing: 1px;
+        }
+
+        /* brand-subtitle removed - hidden completely */
+        .brand-subtitle {
+            display: none;
+        }
+
+        .form-label, label, .input-hint, .auth-footer, .timer, .back-btn, #resendBtn {
+            font-family: 'Noto Nastaliq Urdu', 'Scheherazade New', serif;
+        }
+
+        .form-label {
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .auth-input {
+            background: var(--input-bg-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 20px;
+            padding: 12px 18px;
+            color: var(--text-dark);
+            font-family: 'Noto Nastaliq Urdu', serif;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .auth-input:focus {
+            border-color: var(--insta-gradient-start);
+            box-shadow: 0 0 0 3px rgba(240,148,51,0.2);
+            background: var(--input-bg-dark);
+            color: var(--text-dark);
+        }
+        .auth-input::placeholder {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            color: var(--text-muted-dark);
+        }
+
+        .btn-luxury {
+            background: linear-gradient(45deg, var(--insta-gradient-start), var(--insta-gradient-end));
+            border: none;
+            border-radius: 40px;
+            padding: 12px;
+            color: white;
+            font-family: 'Noto Nastaliq Urdu', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.25s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-luxury:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            color: white;
+        }
+
+        .otp-input {
+            width: 55px;
+            height: 60px;
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            background: var(--input-bg-dark);
+            border: 2px solid var(--border-dark);
+            border-radius: 20px;
+            color: var(--text-dark);
+            font-family: 'Noto Nastaliq Urdu', monospace;
+            transition: all 0.2s;
+        }
+        .otp-input:focus {
+            border-color: var(--insta-gradient-start);
+            box-shadow: 0 0 0 3px rgba(240,148,51,0.2);
+            outline: none;
+        }
+
+        .divider-custom {
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+        .divider-custom::before,
+        .divider-custom::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-dark);
+        }
+        .divider-custom span {
+            padding: 0 15px;
+            color: var(--accent-gold);
+            font-family: 'Noto Nastaliq Urdu', serif;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--insta-gradient-start), var(--insta-gradient-end));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .timer-text {
+            background: linear-gradient(135deg, var(--insta-gradient-start), var(--insta-gradient-end));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted-dark);
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .back-btn:hover { color: var(--insta-gradient-start); }
+
+        .footer-link {
+            background: linear-gradient(135deg, var(--insta-gradient-start), var(--insta-gradient-end));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .footer-link:hover { text-decoration: underline; opacity: 0.9; }
+
+        /* استایل جدید برای شعر مولانا با خط نستعلیق و رنگ آبی یخی */
+        .rumi-poem {
+            font-family: 'Noto Nastaliq Urdu', 'Scheherazade New', serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--icy-blue);
+            text-shadow: 0 0 6px var(--icy-blue-glow);
+            text-align: center;
+            line-height: 2rem;
+            letter-spacing: 0.5px;
+            background: transparent;
+            display: inline-block;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        body.light .rumi-poem {
+            text-shadow: 0 0 4px rgba(8,145,178,0.3);
+        }
+
+        .hidden { display: none !important; }
+
+        .shake {
+            animation: shakeAnim 0.3s ease-in-out;
+        }
+        @keyframes shakeAnim {
+            0%,100%{transform:translateX(0)}
+            25%{transform:translateX(-6px)}
+            75%{transform:translateX(6px)}
+        }
+
+        .toast-custom {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--card-dark);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-dark);
+            border-radius: 60px;
+            padding: 12px 24px;
+            color: var(--text-dark);
+            font-family: 'Noto Nastaliq Urdu', serif;
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+        }
+        .toast-custom.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 576px) {
+            .otp-input { width: 45px; height: 50px; font-size: 1.3rem; }
+            .brand-name { font-size: 2.5rem; }
+            .persian-column { display: none; }
+            .simorgh { font-size: 2.5rem; }
+            .rumi-poem { font-size: 0.85rem; line-height: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Theme Toggle -->
+<div class="theme-toggle" id="themeToggle">
+    <i class="fas fa-sun"></i>
+    <i class="fas fa-moon"></i>
+</div>
+
+<!-- Persian Miniature Art Background (تزئینات نگارگری) -->
+<div class="persian-art-bg">
+    <div class="miniature-bird" style="top: 15%; left: -10%; animation-duration: 18s;">🕊️</div>
+    <div class="miniature-bird" style="top: 35%; left: -5%; animation-duration: 22s; animation-delay: 3s;">🐦</div>
+    <div class="miniature-bird" style="top: 55%; left: -15%; animation-duration: 25s; animation-delay: 6s;">🦜</div>
+    <div class="simorgh" style="top: 20%; left: -20%; animation-duration: 35s;">🦅✨</div>
+    <div class="simorgh" style="top: 65%; left: -30%; animation-duration: 40s; animation-delay: 8s;">🐉🌿</div>
+    <div class="floating-flower" style="top: 10%; right: 5%; animation-duration: 7s;">🌹</div>
+    <div class="floating-flower" style="top: 45%; right: 15%; animation-duration: 9s; animation-delay: 2s;">🌷</div>
+    <div class="floating-flower" style="top: 75%; right: 8%; animation-duration: 8s; animation-delay: 4s;">🌸</div>
+    <div class="floating-flower" style="top: 20%; left: 10%; animation-duration: 6s; animation-delay: 1s;">🌼</div>
+    <div class="nightingale" style="top: 30%; right: 20%; animation-duration: 11s;">🐦‍⬛🎵</div>
+    <div class="nightingale" style="top: 50%; left: 25%; animation-duration: 13s; animation-delay: 2s;">🐦🎶</div>
+    <div class="cypress" style="bottom: 5%; left: 3%; animation-duration: 5s;">🌲</div>
+    <div class="cypress" style="bottom: 8%; right: 4%; animation-duration: 6s; animation-delay: 1s;">🌳</div>
+    <div class="persian-cloud" style="top: 5%; left: 0; width: 150px; height: 80px; animation-duration: 30s;"></div>
+    <div class="persian-cloud" style="top: 12%; left: 30%; width: 120px; height: 60px; animation-duration: 35s; animation-delay: 5s;"></div>
+    <div class="landscape-wave"></div>
+    <div class="animated-eslimi"></div>
+</div>
+
+<!-- Traditional Persian Architecture -->
+<div class="persian-architecture">
+    <div class="iwan-arch"></div>
+    <div class="muqarnas">
+        <div class="muqarnas-row" style="margin-top: 10px;">
+            <div class="muqarnas-cell"></div><div class="muqarnas-cell"></div><div class="muqarnas-cell"></div>
+            <div class="muqarnas-cell"></div><div class="muqarnas-cell"></div><div class="muqarnas-cell"></div>
+            <div class="muqarnas-cell"></div><div class="muqarnas-cell"></div>
+        </div>
+        <div class="muqarnas-row">
+            <div class="muqarnas-cell"></div><div class="muqarnas-cell"></div><div class="muqarnas-cell"></div>
+            <div class="muqarnas-cell"></div><div class="muqarnas-cell"></div>
+        </div>
+        <div class="muqarnas-row">
+            <div class="muqarnas-cell"></div><div class="muqarnas-cell"></div><div class="muqarnas-cell"></div>
+        </div>
+    </div>
+    <div class="persian-column column-left"></div>
+    <div class="persian-column column-right"></div>
+    <div class="tile-pattern"></div>
+</div>
+
+<div class="container my-4" style="max-width: 480px; position: relative; z-index: 10;">
+    <div class="auth-card p-4 p-md-5">
+
+        <div class="card-arch mb-2 pb-4"></div>
+
+        <!-- Brand Section - بدون ستاره و بدون زیرنویس -->
+        <div class="text-center mb-4">
+
+            <h1 class="brand-name mb-5">همدل</h1>
+            <!-- حذف کامل عبارت شبکه اجتماعی اصیل -->
+
+        </div>
+
+        <div class="divider-custom mb-3">
+            <span>✦</span>
+        </div>
+
+        <!-- Step 1: Phone -->
+        <div id="step1">
+            <div class="mb-4">
+                <label class="form-label"><i class="fas fa-mobile-alt"></i> شماره همراه</label>
+                <input type="tel" id="phone" class="form-control auth-input" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" autocomplete="off">
+                <div class="form-text text-muted small mt-2" style="font-family: 'Noto Nastaliq Urdu', serif;">کد تأیید به این شماره ارسال خواهد شد</div>
+            </div>
+            <button id="sendBtn" class="btn btn-luxury w-100">
+                <i class="fas fa-paper-plane ms-2"></i> بیا هم دل ما شو
+            </button>
+        </div>
+
+        <!-- Step 2: OTP -->
+        <div id="step2" class="hidden">
+            <div class="text-center mb-4">
+                <div class="mb-2">
+                    <svg width="50" height="50" viewBox="0 0 80 80">
+                        <text x="40" y="48" text-anchor="middle" font-size="26" fill="url(#gradLight)" font-family="serif">❁</text>
+                        <defs><linearGradient id="gradLight" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="var(--insta-gradient-start)"/><stop offset="100%" stop-color="var(--insta-gradient-end)"/></linearGradient></defs>
+                    </svg>
+                </div>
+                <p class="text-muted small mb-1" style="font-family: 'Noto Nastaliq Urdu', serif;">کد تأیید برای شماره</p>
+                <p class="fw-bold" id="phone-display" style="background: linear-gradient(135deg, var(--insta-gradient-start), var(--insta-gradient-end)); -webkit-background-clip: text; background-clip: text; color: transparent; font-family: 'Noto Nastaliq Urdu', serif;"></p>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label text-center d-block mb-3"><i class="fas fa-key"></i> کد ۶ رقمی را وارد کنید</label>
+                <div class="d-flex justify-content-center gap-2 gap-sm-3">
+                    <input type="text" maxlength="1" class="otp-input text-center" data-idx="0">
+                    <input type="text" maxlength="1" class="otp-input text-center" data-idx="1">
+                    <input type="text" maxlength="1" class="otp-input text-center" data-idx="2">
+                    <input type="text" maxlength="1" class="otp-input text-center" data-idx="3">
+                    <input type="text" maxlength="1" class="otp-input text-center" data-idx="4">
+                    <input type="text" maxlength="1" class="otp-input text-center" data-idx="5">
+                </div>
+                <input type="hidden" id="otp-value">
+            </div>
+
+            <button id="verifyBtn" class="btn btn-luxury w-100 mb-3">
+                <i class="fas fa-sign-in-alt ms-2"></i> ورود به همدل
+            </button>
+
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <div class="small text-muted" style="font-family: 'Noto Nastaliq Urdu', serif;">
+                    <i class="fas fa-clock"></i>
+                    <span id="timer-text" class="timer-text me-1">۰۲:۰۰</span>
+                </div>
+                <button id="resendBtn" class="btn btn-link p-0 hidden" style="font-family: 'Noto Nastaliq Urdu', serif; color: var(--insta-gradient-start);">ارسال مجدد کد</button>
+            </div>
+
+            <button id="backBtn" class="back-btn w-100 mt-3 py-2">
+                <i class="fas fa-arrow-right ms-1"></i> بازگشت
+            </button>
+        </div>
+
+        <div class="divider-custom my-4">
+            <span>✧</span>
+        </div>
+
+        <div class="text-center">
+            <!-- شعر مولانا با خط نستعلیق و رنگ آبی یخی جایگزین جمله قدیمی -->
+            <div class="rumi-poem">
+                خوشا روزی که ما هم دل شویم<br>از دو عالم یکدمی غافل شویم
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = 'http://127.0.0.1:8000/api';
+    let currentPhone = '';
+    let timerInterval = null;
+
+    function initTheme() {
+        const savedTheme = localStorage.getItem('hamdel_theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light');
+        } else {
+            document.body.classList.remove('light');
+            localStorage.setItem('hamdel_theme', 'dark');
+        }
+    }
+
+    function toggleTheme() {
+        if (document.body.classList.contains('light')) {
+            document.body.classList.remove('light');
+            localStorage.setItem('hamdel_theme', 'dark');
+        } else {
+            document.body.classList.add('light');
+            localStorage.setItem('hamdel_theme', 'light');
+        }
+    }
+
+    function showToast(msg, type) {
+        const toast = document.createElement('div');
+        toast.className = 'toast-custom';
+        toast.textContent = msg;
+        if (type === 'error') toast.style.borderLeft = '4px solid #fd1d1d';
+        if (type === 'success') toast.style.borderLeft = '4px solid #4caf50';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 2700);
+    }
+
+    const otpInputs = document.querySelectorAll('.otp-input');
+
+    function updateOtpValue() {
+        let otp = '';
+        otpInputs.forEach(input => { otp += input.value; });
+        document.getElementById('otp-value').value = otp;
+    }
+
+    otpInputs.forEach((input, idx) => {
+        input.addEventListener('input', (e) => {
+            if (e.target.value.length === 1 && idx < 5) otpInputs[idx + 1].focus();
+            updateOtpValue();
+        });
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !e.target.value && idx > 0) otpInputs[idx - 1].focus();
+        });
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const paste = (e.clipboardData || window.clipboardData).getData('text');
+            if (paste && paste.length === 6 && /^\d+$/.test(paste)) {
+                paste.split('').forEach((char, i) => { if (otpInputs[i]) otpInputs[i].value = char; });
+                updateOtpValue();
+                otpInputs[5].focus();
+                handleVerifyOTP();
+            }
+        });
+    });
+
+    async function handleSendOTP() {
+        const phone = document.getElementById('phone').value.trim();
+        if (!phone || phone.length < 11) {
+            showToast('لطفاً شماره موبایل معتبر وارد کنید', 'error');
+            document.getElementById('phone').classList.add('shake');
+            setTimeout(() => document.getElementById('phone').classList.remove('shake'), 300);
+            return;
+        }
+
+        const btn = document.getElementById('sendBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin ms-2"></i> در حال ارسال...';
+
+        try {
+            const response = await fetch(`${API_BASE}/accounts/login/send-otp/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: phone })
+            });
+            const result = await response.json();
+
+            if (result.success) {
+                currentPhone = phone;
+                showToast('کد تایید ارسال شد', 'success');
+                if (result.otp) showToast('کد تست: ' + result.otp, 'info');
+                if (result.code_for_test) showToast('کد تست: ' + result.code_for_test, 'info');
+
+                document.getElementById('phone-display').textContent = phone;
+                document.getElementById('step1').classList.add('hidden');
+                document.getElementById('step2').classList.remove('hidden');
+                startTimer(120);
+                otpInputs[0].focus();
+            } else {
+                showToast(result.message || 'مشکل در ارسال کد تایید', 'error');
+            }
+        } catch (error) {
+            showToast('مشکل در ارتباط با سرور', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane ms-2"></i> بیا هم دل ما شو';
+        }
+    }
+
+    function startTimer(seconds) {
+        let remaining = seconds;
+        const timerText = document.getElementById('timer-text');
+        const resendBtn = document.getElementById('resendBtn');
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            const mins = Math.floor(remaining / 60);
+            const secs = remaining % 60;
+            timerText.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            if (remaining <= 0) {
+                clearInterval(timerInterval);
+                timerText.innerHTML = 'منقضی شد';
+                resendBtn.classList.remove('hidden');
+            }
+            remaining--;
+        }, 1000);
+    }
+
+    async function handleResendOTP() {
+        const resendBtn = document.getElementById('resendBtn');
+        resendBtn.disabled = true;
+        resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        try {
+            const response = await fetch(`${API_BASE}/accounts/login/send-otp/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: currentPhone })
+            });
+            const result = await response.json();
+            if (result.success) {
+                startTimer(120);
+                resendBtn.classList.add('hidden');
+                resendBtn.innerHTML = 'ارسال مجدد';
+                showToast('کد مجدد ارسال شد', 'success');
+                if (result.otp) showToast('کد تست: ' + result.otp, 'info');
+            }
+        } catch (error) {
+            showToast('مشکل در ارسال مجدد', 'error');
+        } finally {
+            resendBtn.disabled = false;
+        }
+    }
+
+    async function handleVerifyOTP() {
+        const otp = document.getElementById('otp-value').value;
+        if (!otp || otp.length < 6) {
+            showToast('لطفاً کد تایید ۶ رقمی را وارد کنید', 'error');
+            otpInputs.forEach(input => {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 300);
+            });
+            return;
+        }
+
+        const btn = document.getElementById('verifyBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin ms-2"></i> در حال ورود...';
+
+        try {
+            const response = await fetch(`${API_BASE}/accounts/login/verify/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: currentPhone, code: otp })
+            });
+            const result = await response.json();
+
+            if (result.access_token || result.access) {
+                localStorage.setItem('access_token', result.access_token || result.access);
+                localStorage.setItem('refresh_token', result.refresh_token || result.refresh);
+                localStorage.setItem('user_id', result.user_id);
+                showToast('ورود با موفقیت انجام شد', 'success');
+                setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+            } else {
+                showToast(result.message || 'کد تایید نامعتبر است', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt ms-2"></i> ورود به همدل';
+            }
+        } catch (error) {
+            showToast('مشکل در ارتباط با سرور', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sign-in-alt ms-2"></i> ورود به همدل';
+        }
+    }
+
+    function backToLogin() {
+        if (timerInterval) clearInterval(timerInterval);
+        document.getElementById('step2').classList.add('hidden');
+        document.getElementById('step1').classList.remove('hidden');
+        document.getElementById('otp-value').value = '';
+        otpInputs.forEach(input => input.value = '');
+    }
+
+    document.getElementById('sendBtn').addEventListener('click', handleSendOTP);
+    document.getElementById('verifyBtn').addEventListener('click', handleVerifyOTP);
+    document.getElementById('resendBtn').addEventListener('click', handleResendOTP);
+    document.getElementById('backBtn').addEventListener('click', backToLogin);
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+    // حذف eventListener قدیمی برای registerHint چون دیگر وجود خارجی ندارد
+    // اما برای جلوگیری از خطا اگر جایی به آن ارجاع شود
+    const registerHint = document.getElementById('registerHint');
+    if(registerHint) {
+        registerHint.addEventListener('click', (e) => {
+            e.preventDefault();
+            showToast('برای ثبت‌نام با شماره موبایل وارد شوید', 'info');
+        });
+    }
+
+    initTheme();
+</script>
+</body>
+</html>
