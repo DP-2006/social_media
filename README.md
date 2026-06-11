@@ -6,7 +6,6 @@
 <img src="https://img.shields.io/badge/Django-5.0-092E20?style=for-the-badge&logo=django&logoColor=white"/>
 <img src="https://img.shields.io/badge/Ollama-0.1.8-000000?style=for-the-badge&logo=ollama&logoColor=white"/>
 <img src="https://img.shields.io/badge/Qwen-7B-4A90E2?style=for-the-badge&logo=ai&logoColor=white"/>
-<img src="https://img.shields.io/badge/WebSocket-00C7B7?style=for-the-badge&logo=socket.io&logoColor=white"/>
 <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white"/>
 
 <p align="center">
