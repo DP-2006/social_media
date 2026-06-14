@@ -5,19 +5,7 @@
 
 <img src="https://img.shields.io/badge/Django-5.0-092E20?style=for-the-badge&logo=django&logoColor=white"/>
 <img src="https://img.shields.io/badge/Ollama-0.1.8-000000?style=for-the-badge&logo=ollama&logoColor=white"/>
-<img src="https://img.shields.io/badge/Qwen-7B-4A90E2?style=for-the-badge&logo=ai&logoColor=white"/>
 <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white"/>
-
-<p align="center">
-  <strong>Intelligent Social Network with AI-Powered Anonymous Chat Matching</strong>
-  
-<p align="center">
-  <strong>An SAFA‑Inspired Network built with Django</strong>  
-  <br><br>
-  ⭐ <em>"Better than wen you see!"</em> ⭐
-</p>
-
-</p>
 
 <p align="center">
   <a href="#features">Features</a> •
@@ -31,7 +19,7 @@
 </div>
 
 ───────────────────────────────────────────────────────────────────────────────
-📌 ABOUT SAFA
+📌 ABOUT 
 ───────────────────────────────────────────────────────────────────────────────
 
 Safa is a complete, production-ready backend for a modern social network. 
@@ -59,7 +47,7 @@ everything from OTP authentication to intelligent conversation starters.
 
 🏗️ PROJECT STRUCTURE
 
-social_media-SAFA/
+social_media-/
 ├── apps/
 │   ├── accounts/          # OTP + JWT authentication
 │   ├── profiles/          # User profiles & settings
@@ -360,14 +348,6 @@ ollama serve
 
 AI Features:
 
-| Feature                 | Description                        | Fallback if Offline      |
-|-------------------------|------------------------------------|--------------------------|
-| Personality Analysis    | Analyzes user behavior patterns    | Basic profile stats      |
-| Message Suggestions     | Smart opening lines for DMs        | Template-based           |
-| Explore Feed            | Personalized content ranking       | Popularity-based         |
-| Hashtag Recommendations | Trend-aware hashtags               | Static categories        |
-| Content Moderation      | Auto-detect inappropriate content  | Basic keyword filter     |
-
 Example AI Response:
 
 {
@@ -378,193 +358,17 @@ Example AI Response:
     "suggested_connection": "Similar users with art interests"
   }
 }
-
-───────────────────────────────────────────────────────────────────────────────
-🧪 TESTING
-───────────────────────────────────────────────────────────────────────────────
-
-Run Tests:
-
-# Run all tests
-python manage.py test
-
-# Run specific app tests
-python manage.py test apps.accounts
-python manage.py test apps.posts
-
-# With coverage
-pip install coverage
-coverage run manage.py test
-coverage report
-
-Sample API Test (using curl):
-
-# 1. Register
-curl -X POST http://127.0.0.1:8000/api/accounts/register/send-otp/ \
-  -H "Content-Type: application/json" \
-  -d '{"phone": "09123456789"}'
-
-# 2. Verify OTP
-curl -X POST http://127.0.0.1:8000/api/accounts/register/verify/ \
-  -H "Content-Type: application/json" \
-  -d '{"phone": "09123456789", "otp": "123456", "username": "alireza"}'
-
-# Response contains access_token
-
-# 3. Create post (using token)
-curl -X POST http://127.0.0.1:8000/api/posts/ \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"content": "Hello Safa Network! 🚀"}'
-
-# 4. Get feed
-curl -X GET http://127.0.0.1:8000/api/posts/feed/ \
-  -H "Authorization: Bearer YOUR_TOKEN"
-
-
-🐛 DEBUG LOG & KNOWN ISSUES
-
-
-Current Status:
-
-| Issue                                      | Severity | Status                    |
-|--------------------------------------------|----------|---------------------------|
-| name 'user' is not defined in posts        | ⚠️ Warning| Non-blocking, being fixed |
-| Static files collection warning            | ⚠️ Warning| Run 'collectstatic'       |
-| Ollama connection on first run             | ℹ️ Info   | Auto-fallback works       |
-
-Debug Commands:
-
-# Check Ollama status
-curl http://localhost:11434/api/tags
-
-# Check API health
-curl http://127.0.0.1:8000/api/ml/health/
-
-# View Django logs
-python manage.py runserver --verbosity 3
-
-# Database shell
-python manage.py dbshell
-
-
-📊 DATABASE SCHEMA
-
-
-Key Models:
-
-User (Custom)
-- phone (unique)
-- username (unique)
-- is_active
-- is_private
-
-Profile
-- user (OneToOne)
-- display_name
-- bio
-- avatar
-- is_private
-
-Post
-- user (ForeignKey)
-- content
-- image
-- likes_count
-- comments_count
-- created_at
-
-Comment
-- user (ForeignKey)
-- post (ForeignKey)
-- parent (ForeignKey, self)
-- content
-
-Follow
-- follower (ForeignKey)
-- following (ForeignKey)
-- created_at
-
-Story
-- user (ForeignKey)
-- media
-- expires_at (24h later)
-
-Conversation
-- participants (ManyToMany)
-- last_message
-
-Message
-- conversation (ForeignKey)
-- sender (ForeignKey)
-- content
-- is_read
-
-Note: All primary keys use UUID for security.
-
-
-🎯 UPCOMING FEATURES
-
-
-
-───────────────────────────────────────────────────────────────────────────────
-🤝 CONTRIBUTING
-───────────────────────────────────────────────────────────────────────────────
-
-We love contributions!
-
-# Fork the repository
-# Create a feature branch
-git checkout -b feature/awesome-feature
-
-# Make your changes
-# Run tests
-python manage.py test
-
-# Commit with conventional commit format
-git commit -m "feat: add awesome feature"
-
-# Push and create PR
-git push origin feature/awesome-feature
-
-Commit Convention:
-
-feat:     New feature
-fix:      Bug fix
-docs:     Documentation
-style:    Code style
-refactor: Code refactor
-test:     Testing
-chore:    Maintenance
-
-📄 LICENSE
-
-
-MIT License - Free for personal and commercial use
-
-Copyright (c) 2025 SAFA Network
-
-
-👥 TEAM
-
-
-GitHub: DP-2006
-
 ───────────────────────────────────────────────────────────────────────────────
 📞 SUPPORT & CONTACT
 ───────────────────────────────────────────────────────────────────────────────
 
 - GitHub Issues: https://github.com/DP-2006/social_media-SAFA-/issues
 - Email: babkuand@gmail.com
--ID cart for donnate :
-  5892-1012-2958-2614
-  بانک سپه-دانیال پورمهدی
-  sepah bank-Danil pourmehdi
+-ID cart for donnate :  sepah bank-Danil pourmehdi
 <div align="center">
 
 
 
-**⭐ If you like this project, give it a star! ⭐**
 
 <sub>© 2026 SAFA - All rights reserved</sub>
 
