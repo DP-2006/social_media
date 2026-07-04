@@ -357,13 +357,11 @@ Example AI Response:
     "suggested_connection": "Similar users with art interests"
   }
 }
-───────────────────────────────────────────────────────────────────────────────
+
 📞 SUPPORT & CONTACT
-───────────────────────────────────────────────────────────────────────────────
 
 - GitHub Issues: https://github.com/DP-2006/social_media-SAFA-/issues
 - Email: babkuand@gmail.com
--ID cart for donnate :  sepah bank-Danil pourmehdi
 <div align="center">
 
 
