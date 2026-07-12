@@ -101,14 +101,6 @@
   - Pattern recognition for spam behaviour
   - Automated spam account detection
   - Content similarity analysis for duplicate spam
-- **Bot Detection** - Recognise and flag automated accounts
-  - Behaviour pattern analysis to identify bots
-  - Activity frequency and pattern matching
-  - Automated bot account quarantine
-- **Duplicate Content Detection** - Identify and manage duplicate or similar posts
-  - Visual similarity detection for images
-  - Content fingerprinting for text
-  - Cross-post plagiarism detection
 - **User Insights Reports** - Generate detailed reports on individual user activities
   - Comprehensive user activity logs
   - Engagement timeline analysis
@@ -120,13 +112,6 @@
   - Content distribution analysis
   - Network health indicators
 
-### 🔔 Notifications System
-- **Activity Notifications** - Get notified of likes, comments, and follows
-- **Message Alerts** - Alerts for new direct messages and group messages
-- **Story Notifications** - Be notified when friends post stories
-- **Customisable Preferences** - Configure notification settings and frequency
-- **Notification History** - View all past notifications
-- **Smart Notifications** - Intelligent grouping and prioritisation
 
 ### 🤝 Social Interactions
 - **Follow System** - Follow other users to see their content in your feed
@@ -143,7 +128,6 @@
 - **Two-Factor Authentication** - Optional 2FA for enhanced security
 - **Privacy Settings** - Control post visibility (Public, Private, Close Friends)
 - **Block Users** - Block unwanted users from contacting or viewing you
-- **Mute Accounts** - Mute accounts without unfollowing
 - **Report Content** - Report inappropriate, harmful, or copyright-infringing content
 - **Data Encryption** - Secure end-to-end encryption for messages
 - **Session Management** - Secure session handling and device logout
@@ -177,17 +161,6 @@
 
 ### Currently Supported
 - 🇮🇷 **Persian (Farsi)** - Full support with RTL (Right-to-Left) interface
-
-### Coming Soon
-- 🇬🇧 English
-- 🇪🇸 Spanish
-- 🇫🇷 French
-- 🇩🇪 German
-- 🇮🇹 Italian
-- 🇰🇷 Korean
-- 🇯🇵 Japanese
-- 🇨🇳 Simplified Chinese
-- And more languages to follow...
 
 **Language switching** will be available in user settings with dynamic UI localisation.
 
